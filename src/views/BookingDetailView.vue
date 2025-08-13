@@ -69,7 +69,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import ErrorAlert from "../components/ErrorAlert.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 import BookingDetailHeader from "../components/booking/BookingDetailHeader.vue";
@@ -85,8 +86,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const route = useRoute();
 
-const bookingId = computed(() => props.id);
+const bookingId = computed(() => props.id || (route.params.id as string));
 
 const {
   rescheduleLoading,
@@ -103,7 +105,44 @@ const {
   clearError,
 } = useBookingDetail(bookingId.value);
 
+const loadBookingData = async () => {
+  const currentBookingId = bookingId.value;
+  if (currentBookingId && currentBookingId.trim() !== "") {
+    console.log(
+      "🔄 BookingDetailView: Loading booking for ID:",
+      currentBookingId
+    );
+    await loadBooking();
+  } else {
+    console.error(
+      "❌ BookingDetailView: Invalid booking ID:",
+      currentBookingId
+    );
+    goBack();
+  }
+};
+
+watch(
+  bookingId,
+  (newId, oldId) => {
+    if (newId !== oldId && newId) {
+      console.log(
+        "🔄 BookingDetailView: Booking ID changed from",
+        oldId,
+        "to",
+        newId
+      );
+      loadBookingData();
+    }
+  },
+  { immediate: false }
+);
+
 onMounted(() => {
-  loadBooking();
+  console.log(
+    "🎯 BookingDetailView: Component mounted with booking ID:",
+    bookingId.value
+  );
+  loadBookingData();
 });
 </script>

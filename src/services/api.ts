@@ -186,22 +186,49 @@ class ApiService {
       pickupDate: pickupDate,
       returnDate: returnDate,
       duration: duration,
-      status: this.getRandomStatus(),
+      status: this.getDeterministicStatus(mockBooking.id),
     };
   }
 
-  private getRandomStatus():
-    | "confirmed"
-    | "in-progress"
-    | "completed"
-    | "cancelled" {
+  // Generate deterministic pseudo-random number based on string seed
+  private seededRandom(seed: string): number {
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      const char = seed.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash) / 2147483647; // Normalize to 0-1
+  }
+
+  private getDeterministicStatus(
+    bookingId: string
+  ): "confirmed" | "in-progress" | "completed" | "cancelled" {
     const statuses = [
       "confirmed",
       "in-progress",
       "completed",
       "cancelled",
     ] as const;
-    return statuses[Math.floor(Math.random() * statuses.length)];
+    const random = this.seededRandom(bookingId + "_status");
+    return statuses[Math.floor(random * statuses.length)];
+  }
+
+  private getDeterministicVehicleType(bookingId: string): string {
+    const types = [
+      "Compact Campervan",
+      "Family Motorhome",
+      "Luxury RV",
+      "Adventure Van",
+      "Eco Camper",
+    ];
+    const random = this.seededRandom(bookingId + "_vehicle");
+    return types[Math.floor(random * types.length)];
+  }
+
+  private getDeterministicPrice(bookingId: string): number {
+    const random = this.seededRandom(bookingId + "_price");
+    return Math.floor(random * 1000) + 200;
   }
 
   private generateMockBookingDetail(booking: Booking): BookingDetail {
@@ -210,20 +237,9 @@ class ApiService {
       customerEmail: `${booking.customerName
         .toLowerCase()
         .replace(/\s+/g, ".")}@example.com`,
-      vehicleType: this.getRandomVehicleType(),
-      totalPrice: Math.floor(Math.random() * 1000) + 200,
+      vehicleType: this.getDeterministicVehicleType(booking.id),
+      totalPrice: this.getDeterministicPrice(booking.id),
     };
-  }
-
-  private getRandomVehicleType(): string {
-    const types = [
-      "Compact Campervan",
-      "Family Motorhome",
-      "Luxury RV",
-      "Adventure Van",
-      "Eco Camper",
-    ];
-    return types[Math.floor(Math.random() * types.length)];
   }
 
   async searchStations(query: string): Promise<Station[]> {
@@ -262,6 +278,11 @@ class ApiService {
   async getBookingDetail(id: string): Promise<BookingDetail | null> {
     console.log("🔍 API: Getting booking detail for ID:", id);
 
+    if (!id || id.trim() === "") {
+      console.error("❌ Invalid booking ID provided to API");
+      return null;
+    }
+
     await new Promise((resolve) => setTimeout(resolve, 400));
 
     try {
@@ -285,7 +306,7 @@ class ApiService {
           return detail;
         }
       }
-      console.log("❌ Booking not found in any station");
+      console.log("❌ Booking not found in any station for ID:", id);
       return null;
     } catch (error) {
       console.error("❌ Error fetching booking detail:", error);
