@@ -6,7 +6,7 @@
       @back="goBack"
     />
 
-    <main class="max-w-4xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <main class="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
       <div v-if="loading" class="text-center py-12">
         <LoadingSpinner size="lg" text="Loading booking details..." />
       </div>
@@ -15,15 +15,6 @@
         <CustomerInfoSection :booking="booking" />
 
         <BookingInfoSection :booking="booking" />
-
-        <BookingRescheduleSection
-          v-if="canReschedule"
-          :booking="booking"
-          :loading="rescheduleLoading"
-          :error="rescheduleError"
-          @submit="handleReschedule"
-          @reset="resetReschedule"
-        />
 
         <div class="flex justify-center">
           <button
@@ -59,12 +50,6 @@
       :message="error || ''"
       @dismiss="clearError"
     />
-
-    <SuccessAlert
-      :show="rescheduleSuccess"
-      message="Booking rescheduled successfully!"
-      @dismiss="() => (rescheduleSuccess = false)"
-    />
   </div>
 </template>
 
@@ -75,10 +60,8 @@ import ErrorAlert from "../components/ErrorAlert.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 import BookingDetailHeader from "../components/booking/BookingDetailHeader.vue";
 import BookingInfoSection from "../components/booking/BookingInfoSection.vue";
-import BookingRescheduleSection from "../components/booking/BookingRescheduleSection.vue";
 import CustomerInfoSection from "../components/booking/CustomerInfoSection.vue";
 import EmptyState from "../components/common/EmptyState.vue";
-import SuccessAlert from "../components/common/SuccessAlert.vue";
 import { useBookingDetail } from "../composables/useBookingDetail";
 
 interface Props {
@@ -90,20 +73,8 @@ const route = useRoute();
 
 const bookingId = computed(() => props.id || (route.params.id as string));
 
-const {
-  rescheduleLoading,
-  rescheduleSuccess,
-  rescheduleError,
-  booking,
-  loading,
-  error,
-  canReschedule,
-  loadBooking,
-  goBack,
-  handleReschedule,
-  resetReschedule,
-  clearError,
-} = useBookingDetail(bookingId.value);
+const { booking, loading, error, loadBooking, goBack, clearError } =
+  useBookingDetail(bookingId.value);
 
 const loadBookingData = async () => {
   const currentBookingId = bookingId.value;

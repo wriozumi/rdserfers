@@ -1,10 +1,5 @@
 import type { Booking, BookingDetail, Station } from "../types";
 import { calculateDuration } from "../utils";
-import {
-  filterBookingsByDateRange,
-  findStationById,
-  searchStations,
-} from "../utils/dataUtils";
 
 const MOCK_STATIONS: Station[] = [
   {
@@ -219,145 +214,138 @@ const MOCK_STATION_BOOKINGS = {
   ],
 };
 
+// Simplified deterministic generators for consistent mock data
+const seededRandom = (seed: string): number => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash) / 2147483647;
+};
+
+const getBookingStatus = (
+  bookingId: string
+): "confirmed" | "in-progress" | "completed" | "cancelled" => {
+  const statuses = [
+    "confirmed",
+    "in-progress",
+    "completed",
+    "cancelled",
+  ] as const;
+  const random = seededRandom(bookingId + "_status");
+  return statuses[Math.floor(random * statuses.length)];
+};
+
+const getVehicleType = (bookingId: string): string => {
+  const types = [
+    "Compact Campervan",
+    "Family Motorhome",
+    "Luxury RV",
+    "Adventure Van",
+    "Eco Camper",
+  ];
+  const random = seededRandom(bookingId + "_vehicle");
+  return types[Math.floor(random * types.length)];
+};
+
+const getPrice = (bookingId: string): number => {
+  const random = seededRandom(bookingId + "_price");
+  return Math.floor(random * 1000) + 200;
+};
+
+// Simple utility functions
+const searchStations = (stations: Station[], query: string): Station[] => {
+  if (!query.trim()) return stations;
+  const lowercaseQuery = query.toLowerCase();
+  return stations.filter(
+    (station) =>
+      station.name.toLowerCase().includes(lowercaseQuery) ||
+      station.address.toLowerCase().includes(lowercaseQuery)
+  );
+};
+
+const findStationById = (
+  stations: Station[],
+  id: string
+): Station | undefined => {
+  return stations.find((station) => station.id === id);
+};
+
+const filterBookingsByDateRange = (
+  bookings: Booking[],
+  startDate: Date,
+  endDate: Date
+): Booking[] => {
+  return bookings.filter((booking) => {
+    const pickupDate = new Date(booking.pickupDate);
+    const returnDate = new Date(booking.returnDate);
+    return (
+      (pickupDate >= startDate && pickupDate <= endDate) ||
+      (returnDate >= startDate && returnDate <= endDate) ||
+      (pickupDate <= startDate && returnDate >= endDate)
+    );
+  });
+};
+
 class ApiService {
   private transformMockBooking(mockBooking: any, stationName: string): Booking {
-    const pickupDate = mockBooking.startDate;
-    const returnDate = mockBooking.endDate;
-    const duration = calculateDuration(pickupDate, returnDate);
-
     return {
       id: mockBooking.id,
       customerName: mockBooking.customerName,
       stationId: mockBooking.pickupReturnStationId,
-      stationName: stationName,
-      pickupDate: pickupDate,
-      returnDate: returnDate,
-      duration: duration,
-      status: this.getDeterministicStatus(mockBooking.id),
+      stationName,
+      pickupDate: mockBooking.startDate,
+      returnDate: mockBooking.endDate,
+      duration: calculateDuration(mockBooking.startDate, mockBooking.endDate),
+      status: getBookingStatus(mockBooking.id),
     };
   }
 
-  private seededRandom(seed: string): number {
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-      const char = seed.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
-    }
-    return Math.abs(hash) / 2147483647;
-  }
-
-  private getDeterministicStatus(
-    bookingId: string
-  ): "confirmed" | "in-progress" | "completed" | "cancelled" {
-    const statuses = [
-      "confirmed",
-      "in-progress",
-      "completed",
-      "cancelled",
-    ] as const;
-    const random = this.seededRandom(bookingId + "_status");
-    return statuses[Math.floor(random * statuses.length)];
-  }
-
-  private getDeterministicVehicleType(bookingId: string): string {
-    const types = [
-      "Compact Campervan",
-      "Family Motorhome",
-      "Luxury RV",
-      "Adventure Van",
-      "Eco Camper",
-    ];
-    const random = this.seededRandom(bookingId + "_vehicle");
-    return types[Math.floor(random * types.length)];
-  }
-
-  private getDeterministicPrice(bookingId: string): number {
-    const random = this.seededRandom(bookingId + "_price");
-    return Math.floor(random * 1000) + 200;
-  }
-
-  private generateMockBookingDetail(booking: Booking): BookingDetail {
+  private generateBookingDetail(booking: Booking): BookingDetail {
     return {
       ...booking,
       customerEmail: `${booking.customerName
         .toLowerCase()
         .replace(/\s+/g, ".")}@example.com`,
-      vehicleType: this.getDeterministicVehicleType(booking.id),
-      totalPrice: this.getDeterministicPrice(booking.id),
+      vehicleType: getVehicleType(booking.id),
+      totalPrice: getPrice(booking.id),
     };
   }
 
   async searchStations(query: string): Promise<Station[]> {
     await new Promise((resolve) => setTimeout(resolve, 300));
-
-    try {
-      return searchStations(MOCK_STATIONS, query);
-    } catch (error) {
-      console.error("Error searching stations:", error);
-      return [];
-    }
+    return searchStations(MOCK_STATIONS, query);
   }
 
   async getAllStations(): Promise<Station[]> {
     await new Promise((resolve) => setTimeout(resolve, 200));
-
-    try {
-      return MOCK_STATIONS;
-    } catch (error) {
-      console.error("Error fetching all stations:", error);
-      return [];
-    }
+    return MOCK_STATIONS;
   }
 
   async getStationById(id: string): Promise<Station | null> {
     await new Promise((resolve) => setTimeout(resolve, 150));
-
-    try {
-      return findStationById(MOCK_STATIONS, id) || null;
-    } catch (error) {
-      console.error("Error fetching station:", error);
-      return null;
-    }
+    return findStationById(MOCK_STATIONS, id) || null;
   }
 
   async getBookingDetail(id: string): Promise<BookingDetail | null> {
-    console.log("🔍 API: Getting booking detail for ID:", id);
-
-    if (!id || id.trim() === "") {
-      console.error("❌ Invalid booking ID provided to API");
-      return null;
-    }
+    if (!id?.trim()) return null;
 
     await new Promise((resolve) => setTimeout(resolve, 400));
 
-    try {
-      for (const [stationId, bookings] of Object.entries(
-        MOCK_STATION_BOOKINGS
-      )) {
-        console.log(
-          `🔎 Searching in station ${stationId} with ${bookings.length} bookings`
+    for (const [stationId, bookings] of Object.entries(MOCK_STATION_BOOKINGS)) {
+      const mockBooking = bookings.find((b: any) => b.id === id);
+      if (mockBooking) {
+        const station = findStationById(MOCK_STATIONS, stationId);
+        const booking = this.transformMockBooking(
+          mockBooking,
+          station?.name || "Unknown Station"
         );
-        const mockBooking = bookings.find((b: any) => b.id === id);
-        if (mockBooking) {
-          console.log("📋 Found mock booking:", mockBooking);
-          const station = MOCK_STATIONS.find((s) => s.id === stationId);
-          const booking = this.transformMockBooking(
-            mockBooking,
-            station?.name || "Unknown Station"
-          );
-          console.log("🔄 Transformed booking:", booking);
-          const detail = this.generateMockBookingDetail(booking);
-          console.log("✅ Generated booking detail:", detail);
-          return detail;
-        }
+        return this.generateBookingDetail(booking);
       }
-      console.log("❌ Booking not found in any station for ID:", id);
-      return null;
-    } catch (error) {
-      console.error("❌ Error fetching booking detail:", error);
-      return null;
     }
+    return null;
   }
 
   async getBookingsForStation(
@@ -367,44 +355,17 @@ class ApiService {
   ): Promise<Booking[]> {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    try {
-      const stationBookings =
-        MOCK_STATION_BOOKINGS[
-          stationId as keyof typeof MOCK_STATION_BOOKINGS
-        ] || [];
-      const station = findStationById(MOCK_STATIONS, stationId);
-      const stationName = station?.name || "Unknown Station";
+    const stationBookings =
+      MOCK_STATION_BOOKINGS[stationId as keyof typeof MOCK_STATION_BOOKINGS] ||
+      [];
+    const station = findStationById(MOCK_STATIONS, stationId);
+    const stationName = station?.name || "Unknown Station";
 
-      const bookings = stationBookings.map((mockBooking: any) =>
-        this.transformMockBooking(mockBooking, stationName)
-      );
+    const bookings = stationBookings.map((mockBooking: any) =>
+      this.transformMockBooking(mockBooking, stationName)
+    );
 
-      return filterBookingsByDateRange(bookings, startDate, endDate);
-    } catch (error) {
-      console.error("Error fetching bookings for station:", error);
-      return [];
-    }
-  }
-
-  async rescheduleBooking(
-    bookingId: string,
-    newPickupDate: string,
-    newReturnDate: string
-  ): Promise<boolean> {
-    console.log("🔄 Mock API Call - Reschedule Booking:", {
-      bookingId,
-      newPickupDate,
-      newReturnDate,
-      endpoint: `PUT https://api.roadsurfer.com/bookings/${bookingId}`,
-      payload: {
-        pickupDate: newPickupDate,
-        returnDate: newReturnDate,
-      },
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    return Math.random() > 0.1;
+    return filterBookingsByDateRange(bookings, startDate, endDate);
   }
 }
 

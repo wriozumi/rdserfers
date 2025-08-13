@@ -62,13 +62,6 @@
           @refresh="refreshData"
           @select-booking="handleBookingClick"
         />
-
-        <BookingStatsSection
-          v-if="hasData"
-          :weekly-bookings-count="weeklyBookingsCount"
-          :active-bookings-count="activeBookingsCount"
-          :occupancy-rate="occupancyRate"
-        />
       </div>
 
       <WelcomeState v-else />
@@ -79,13 +72,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useBookingStats } from "../composables/useBookingStats";
+
 import { apiService } from "../services/api";
 import { useAppStore } from "../stores/app";
 import type { Booking, Station } from "../types";
 import { formatDateRange } from "../utils";
 
-import BookingStatsSection from "../components/calendar/BookingStatsSection.vue";
 import CalendarContainer from "../components/calendar/CalendarContainer.vue";
 import SelectedStationCard from "../components/calendar/SelectedStationCard.vue";
 import StationSearchSection from "../components/calendar/StationSearchSection.vue";
@@ -109,14 +101,7 @@ const weekBookings = computed(() => store.weekBookings);
 const loading = computed(() => store.loading);
 const searchLoading = computed(() => store.searchLoading);
 const error = computed(() => store.error);
-const hasData = computed(() => store.hasData);
 const isEmpty = computed(() => store.isEmpty);
-
-const { activeBookingsCount, occupancyRate, weeklyBookingsCount } =
-  useBookingStats(
-    () => weekBookings.value,
-    () => weekRange.value
-  );
 
 const weekTitle = computed(() =>
   formatDateRange(weekRange.value.start, weekRange.value.end)

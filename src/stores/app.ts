@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { apiService } from "../services/api";
 import type { Booking, BookingDetail, Station } from "../types";
-import { addWeeks, calculateDuration, getWeekRange, parseDate } from "../utils";
+import { addWeeks, getWeekRange } from "../utils";
 
 export const useAppStore = defineStore("app", () => {
   const selectedStation = ref<Station | null>(null);
@@ -124,82 +124,6 @@ export const useAppStore = defineStore("app", () => {
     }
   };
 
-  const rescheduleBooking = async (
-    bookingId: string,
-    newPickupDate: string,
-    newReturnDate: string
-  ): Promise<boolean> => {
-    if (!bookingId || !newPickupDate || !newReturnDate) {
-      error.value = "All fields are required for rescheduling";
-      return false;
-    }
-
-    const pickup = parseDate(newPickupDate);
-    const returnDate = parseDate(newReturnDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (pickup < today) {
-      error.value = "Pickup date cannot be in the past";
-      return false;
-    }
-
-    if (returnDate <= pickup) {
-      error.value = "Return date must be after pickup date";
-      return false;
-    }
-
-    const duration = calculateDuration(newPickupDate, newReturnDate);
-    if (duration > 365) {
-      error.value = "Booking duration cannot exceed 365 days";
-      return false;
-    }
-
-    loading.value = true;
-    error.value = null;
-
-    try {
-      const success = await apiService.rescheduleBooking(
-        bookingId,
-        newPickupDate,
-        newReturnDate
-      );
-
-      if (success) {
-        const bookingIndex = bookings.value.findIndex(
-          (b: Booking) => b.id === bookingId
-        );
-        if (bookingIndex !== -1) {
-          bookings.value[bookingIndex] = {
-            ...bookings.value[bookingIndex],
-            pickupDate: newPickupDate,
-            returnDate: newReturnDate,
-          };
-        }
-
-        if (selectedBooking.value?.id === bookingId) {
-          selectedBooking.value = {
-            ...selectedBooking.value,
-            pickupDate: newPickupDate,
-            returnDate: newReturnDate,
-          };
-        }
-      } else {
-        error.value =
-          "Failed to reschedule booking. The dates may not be available.";
-      }
-
-      return success;
-    } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to reschedule booking";
-      console.error("Error rescheduling booking:", err);
-      return false;
-    } finally {
-      loading.value = false;
-    }
-  };
-
   const setSearchLoading = (isLoading: boolean) => {
     searchLoading.value = isLoading;
   };
@@ -240,7 +164,6 @@ export const useAppStore = defineStore("app", () => {
     navigateWeek,
     loadBookings,
     loadBookingDetail,
-    rescheduleBooking,
     setSearchLoading,
     clearError,
     clearSelectedBooking,

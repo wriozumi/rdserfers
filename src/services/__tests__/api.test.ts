@@ -1,5 +1,5 @@
 import { apiService } from "@/services/api";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("ApiService", () => {
   beforeEach(() => {});
@@ -82,25 +82,5 @@ describe("ApiService", () => {
     }
   });
 
-  it("reschedules booking successfully", async () => {
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    const result = await apiService.rescheduleBooking(
-      "1",
-      "2025-08-15",
-      "2025-08-20"
-    );
-
-    expect(typeof result).toBe("boolean");
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "🔄 Mock API Call - Reschedule Booking:",
-      expect.objectContaining({
-        bookingId: "1",
-        newPickupDate: "2025-08-15",
-        newReturnDate: "2025-08-20",
-      })
-    );
-
-    consoleSpy.mockRestore();
-  });
 });
