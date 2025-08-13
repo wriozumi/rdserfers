@@ -1,18 +1,19 @@
-import vue from "@vitejs/plugin-vue";
-import { resolve } from "path";
-import { defineConfig } from "vite";
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [vue()],
+  base: '/rdserfer/', // GitHub Pages repository name
   resolve: {
     alias: {
-      "@": resolve(__dirname, "src"),
+      '@': resolve(__dirname, 'src'),
     },
   },
   server: {
     port: 3000,
   },
   optimizeDeps: {
-    exclude: ["vue-demi"],
+    exclude: ['vue-demi'],
   },
 });
