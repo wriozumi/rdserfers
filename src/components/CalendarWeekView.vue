@@ -25,7 +25,10 @@
     </div>
 
     <div class="hidden lg:block">
-      <div class="grid grid-cols-7 divide-x divide-gray-200">
+      <div
+        class="grid grid-cols-7 divide-x divide-gray-200"
+        data-testid="calendar-week-grid"
+      >
         <DayColumn
           v-for="day in weekDays"
           :key="`desktop-${day.date.toISOString()}`"
@@ -47,9 +50,9 @@
 <script setup lang="ts">
 import { useCalendarWeek } from '../composables/useCalendarWeek';
 import type { Booking } from '../types';
-import SkeletonLoader from './common/SkeletonLoader.vue';
 import CalendarHeader from './calendar/CalendarHeader.vue';
 import DayColumn from './calendar/DayColumn.vue';
+import SkeletonLoader from './common/SkeletonLoader.vue';
 
 interface Props {
   currentWeek: Date;

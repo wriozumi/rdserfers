@@ -1,5 +1,5 @@
 <template>
-  <div class="animate-pulse">
+  <div class="animate-pulse" data-testid="skeleton-loader">
     <div v-if="type === 'calendar'" class="space-y-4">
       <div class="h-8 bg-gray-200 rounded w-1/3"></div>
       <div class="grid grid-cols-7 gap-4">

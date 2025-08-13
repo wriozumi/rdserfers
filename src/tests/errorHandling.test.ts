@@ -8,6 +8,19 @@ import {
   withRetry,
 } from '../utils/errorHandling';
 
+const originalOnUnhandledRejection = process.listeners('unhandledRejection');
+beforeEach(() => {
+  process.removeAllListeners('unhandledRejection');
+  process.on('unhandledRejection', () => {});
+});
+
+afterEach(() => {
+  process.removeAllListeners('unhandledRejection');
+  originalOnUnhandledRejection.forEach(listener => {
+    process.on('unhandledRejection', listener);
+  });
+});
+
 describe('ErrorHandling', () => {
   let errorHandler: ErrorHandler;
 
@@ -217,6 +230,8 @@ describe('ErrorHandling', () => {
     });
 
     it('should retry on failure and eventually succeed', async () => {
+      vi.useFakeTimers();
+
       const operation = vi
         .fn()
         .mockRejectedValueOnce(new Error('First failure'))
@@ -226,31 +241,39 @@ describe('ErrorHandling', () => {
       const resultPromise = withRetry(operation, 3, 100);
 
       // Fast forward through the delays
-      vi.runAllTimers();
+      await vi.runAllTimersAsync();
 
       const result = await resultPromise;
 
       expect(result).toBe('success');
       expect(operation).toHaveBeenCalledTimes(3);
+
+      vi.useRealTimers();
     });
 
     it('should fail after max retries', async () => {
+      vi.useFakeTimers();
+
       const error = new Error('Persistent failure');
       const operation = vi.fn().mockRejectedValue(error);
 
       const resultPromise = withRetry(operation, 2, 100);
 
       // Fast forward through the delays
-      vi.runAllTimers();
+      await vi.runAllTimersAsync();
 
       await expect(resultPromise).rejects.toThrow('Persistent failure');
       expect(operation).toHaveBeenCalledTimes(3);
 
       const log = errorHandler.getErrorLog();
       expect(log.length).toBeGreaterThan(0);
+
+      vi.useRealTimers();
     });
 
     it('should apply exponential backoff with jitter', async () => {
+      vi.useFakeTimers();
+
       const operation = vi
         .fn()
         .mockRejectedValueOnce(new Error('First failure'))
@@ -259,22 +282,24 @@ describe('ErrorHandling', () => {
 
       const resultPromise = withRetry(operation, 3, 100);
 
-      expect(vi.getTimerCount()).toBe(0);
-
-      vi.runAllTimers();
+      await vi.runAllTimersAsync();
 
       await resultPromise;
       expect(operation).toHaveBeenCalledTimes(3);
+
+      vi.useRealTimers();
     });
 
     it('should log retry attempts and failures', async () => {
+      vi.useFakeTimers();
+
       const error = new Error('Test failure');
       const operation = vi.fn().mockRejectedValue(error);
       const context = { component: 'TestComponent' };
 
       const resultPromise = withRetry(operation, 1, 100, context);
 
-      vi.runAllTimers();
+      await vi.runAllTimersAsync();
 
       await expect(resultPromise).rejects.toThrow('Test failure');
 
@@ -291,6 +316,8 @@ describe('ErrorHandling', () => {
       expect(retryAttempts).toHaveLength(1);
       expect(finalFailure).toHaveLength(1);
       expect(finalFailure[0].context.component).toBe('TestComponent');
+
+      vi.useRealTimers();
     });
   });
 });

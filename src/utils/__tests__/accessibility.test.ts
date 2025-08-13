@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import AutocompleteInput from '../../components/AutocompleteInput.vue';
 import BookingCard from '../../components/calendar/BookingCard.vue';
 import type { Booking } from '../../types';
@@ -23,7 +23,7 @@ describe('Accessibility Features', () => {
       },
     });
 
-    const input = wrapper.find('input');
+    const input = wrapper.find('[data-testid="autocomplete-input"]');
     expect(input.attributes('role')).toBe('combobox');
     expect(input.attributes('aria-autocomplete')).toBe('list');
     expect(input.attributes('aria-expanded')).toBe('false');
@@ -37,7 +37,7 @@ describe('Accessibility Features', () => {
       },
     });
 
-    const button = wrapper.find('button');
+    const button = wrapper.find('[data-testid="booking-card-1"]');
     expect(button.attributes('aria-label')).toContain('John Doe');
     expect(button.attributes('aria-label')).toContain('confirmed');
   });
@@ -50,10 +50,14 @@ describe('Accessibility Features', () => {
       },
     });
 
-    await wrapper.find('button').trigger('keydown.enter');
+    await wrapper
+      .find('[data-testid="booking-card-1"]')
+      .trigger('keydown.enter');
     expect(wrapper.emitted('select')).toBeTruthy();
 
-    await wrapper.find('button').trigger('keydown.space');
+    await wrapper
+      .find('[data-testid="booking-card-1"]')
+      .trigger('keydown.space');
     expect(wrapper.emitted('select')).toHaveLength(2);
   });
 });

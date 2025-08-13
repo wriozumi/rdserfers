@@ -3,6 +3,7 @@
     <button
       type="button"
       :class="cardClasses"
+      :data-testid="`booking-card-${booking.id}`"
       :aria-label="`View booking details for ${booking.customerName}, ${bookingTypeText}, status: ${booking.status}`"
       @click="$emit('select', booking)"
       @keydown.enter="$emit('select', booking)"

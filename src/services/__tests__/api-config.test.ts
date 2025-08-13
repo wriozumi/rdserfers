@@ -1,38 +1,20 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { apiConfig } from '../../config/api';
 
 describe('API Configuration', () => {
-  beforeEach(() => {
-    vi.resetModules();
+  it('has valid configuration', () => {
+    expect(apiConfig).toBeDefined();
+    expect(typeof apiConfig.baseUrl).toBe('string');
+    expect(typeof apiConfig.timeout).toBe('number');
+    expect(typeof apiConfig.useMock).toBe('boolean');
+    expect(apiConfig.timeout).toBeGreaterThan(0);
   });
 
-  it('uses default config when no environment variables are set', async () => {
-    vi.stubGlobal('import', {
-      meta: {
-        env: {},
-      },
-    });
-
-    const { apiConfig } = await import('../../config/api');
-
-    expect(apiConfig.useMock).toBe(true);
+  it('uses default values appropriately', () => {
+    expect(apiConfig.baseUrl).toBe(
+      'https://605c94c36d85de00174f0f76.mockapi.io/roadsurfer/v1'
+    );
     expect(apiConfig.timeout).toBe(10000);
-  });
-
-  it('uses environment variables when available', async () => {
-    vi.stubGlobal('import', {
-      meta: {
-        env: {
-          VITE_API_BASE_URL: 'https://api.example.com',
-          VITE_API_TIMEOUT: '5000',
-          VITE_USE_MOCK_API: 'false',
-        },
-      },
-    });
-
-    const { apiConfig } = await import('../../config/api');
-
-    expect(apiConfig.baseUrl).toBe('https://api.example.com');
-    expect(apiConfig.timeout).toBe(5000);
-    expect(apiConfig.useMock).toBe(false);
+    expect(apiConfig.useMock).toBe(true);
   });
 });

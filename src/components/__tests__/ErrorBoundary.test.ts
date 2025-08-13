@@ -39,7 +39,9 @@ describe('ErrorBoundary', () => {
 
     expect(wrapper.text()).toContain('Something went wrong');
     expect(wrapper.text()).toContain('Test error');
-    expect(wrapper.find('button').text()).toContain('Try again');
+    expect(wrapper.find('[data-testid="error-retry-button"]').text()).toContain(
+      'Try again'
+    );
 
     consoleSpy.mockRestore();
   });
@@ -54,7 +56,7 @@ describe('ErrorBoundary', () => {
     });
 
     await nextTick();
-    await wrapper.find('button').trigger('click');
+    await wrapper.find('[data-testid="error-retry-button"]').trigger('click');
 
     expect(wrapper.emitted('retry')).toBeTruthy();
 

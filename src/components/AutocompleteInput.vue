@@ -14,6 +14,7 @@
         "
         aria-autocomplete="list"
         role="combobox"
+        data-testid="autocomplete-input"
         class="w-full px-4 py-3 pr-10 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
         :class="{
           'border-red-300 focus:border-red-500 focus:ring-red-500': error,
@@ -27,6 +28,7 @@
       <div
         v-if="loading"
         class="absolute inset-y-0 right-0 flex items-center pr-3"
+        data-testid="autocomplete-loading"
       >
         <div
           class="w-4 h-4 border-2 border-gray-300 border-t-primary-500 rounded-full animate-spin"
@@ -36,6 +38,7 @@
       <button
         v-else-if="query && !disabled"
         type="button"
+        data-testid="autocomplete-clear"
         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors duration-200"
         @click="clear"
       >
@@ -63,11 +66,13 @@
       <div
         v-if="showDropdown && (suggestions.length > 0 || noResultsMessage)"
         role="listbox"
+        data-testid="autocomplete-dropdown"
         :aria-label="`${suggestions.length} stations found`"
         class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
       >
         <div
           v-if="suggestions.length === 0 && noResultsMessage"
+          data-testid="autocomplete-no-results"
           class="px-4 py-3 text-sm text-gray-500"
         >
           {{ noResultsMessage }}
@@ -77,6 +82,7 @@
           v-for="(suggestion, index) in suggestions"
           :key="suggestion.id"
           :id="`suggestion-${index}`"
+          :data-testid="`autocomplete-option-${index}`"
           type="button"
           role="option"
           :aria-selected="index === selectedIndex"

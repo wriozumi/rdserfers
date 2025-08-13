@@ -44,7 +44,9 @@ describe('CalendarWeekView', () => {
       },
     });
 
-    expect(wrapper.find('.grid-cols-7').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="calendar-week-grid"]').exists()).toBe(
+      true
+    );
   });
 
   it('shows skeleton loader when loading', () => {
@@ -56,7 +58,7 @@ describe('CalendarWeekView', () => {
       },
     });
 
-    expect(wrapper.find('.animate-pulse').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="skeleton-loader"]').exists()).toBe(true);
   });
 
   it('emits navigate event when navigation is triggered', async () => {
