@@ -3,7 +3,6 @@ import { computed, ref } from "vue";
 import { apiService } from "../services/api";
 import type { Booking, BookingDetail, Station } from "../types";
 import { addWeeks, calculateDuration, getWeekRange, parseDate } from "../utils";
-import { filterBookingsByDateRange } from "../utils/dataUtils";
 
 export const useAppStore = defineStore("app", () => {
   const selectedStation = ref<Station | null>(null);
@@ -20,9 +19,7 @@ export const useAppStore = defineStore("app", () => {
 
   const weekBookings = computed(() => {
     if (!selectedStation.value) return [];
-
-    const { start, end } = weekRange.value;
-    return filterBookingsByDateRange(bookings.value, start, end);
+    return bookings.value;
   });
 
   const hasData = computed(() => bookings.value.length > 0);
@@ -83,7 +80,7 @@ export const useAppStore = defineStore("app", () => {
           `Retrying booking load (${retryCount.value}/${maxRetries}):`,
           errorMessage
         );
-        setTimeout(() => loadBookings(true), 1000 * retryCount.value); // Exponential backoff
+        setTimeout(() => loadBookings(true), 1000 * retryCount.value);
       } else {
         error.value = `${errorMessage}. Please try again or contact support.`;
         console.error("Max retries exceeded for loading bookings:", err);

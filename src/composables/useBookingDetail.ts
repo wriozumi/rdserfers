@@ -6,12 +6,10 @@ export function useBookingDetail(bookingId: string) {
   const router = useRouter();
   const store = useAppStore();
 
-  // Reactive state
   const rescheduleLoading = ref(false);
   const rescheduleSuccess = ref(false);
   const rescheduleError = ref<string | null>(null);
 
-  // Computed properties
   const booking = computed(() => store.selectedBooking);
   const loading = computed(() => store.loading);
   const error = computed(() => store.error);
@@ -23,7 +21,6 @@ export function useBookingDetail(bookingId: string) {
     );
   });
 
-  // Methods
   const loadBooking = async () => {
     if (!bookingId || bookingId.trim() === "") {
       console.error("Invalid booking ID provided");
@@ -83,18 +80,15 @@ export function useBookingDetail(bookingId: string) {
   };
 
   return {
-    // State
     rescheduleLoading,
     rescheduleSuccess,
     rescheduleError,
 
-    // Computed
     booking,
     loading,
     error,
     canReschedule,
 
-    // Methods
     loadBooking,
     goBack,
     handleReschedule,

@@ -124,6 +124,34 @@ const MOCK_STATION_BOOKINGS = {
       pickupStation: "Berlin Hbf",
       returnStation: "Berlin Hbf",
     },
+
+    {
+      customerName: "Emma Watson",
+      startDate: "2025-08-12T10:00:00.000Z",
+      endDate: "2025-08-15T15:00:00.000Z",
+      id: "110",
+      pickupReturnStationId: "1",
+      pickupStation: "Berlin Hbf",
+      returnStation: "Berlin Hbf",
+    },
+    {
+      customerName: "James Bond",
+      startDate: "2025-08-13T08:00:00.000Z",
+      endDate: "2025-08-16T18:00:00.000Z",
+      id: "111",
+      pickupReturnStationId: "1",
+      pickupStation: "Berlin Hbf",
+      returnStation: "Berlin Hbf",
+    },
+    {
+      customerName: "Sarah Connor",
+      startDate: "2025-08-14T12:00:00.000Z",
+      endDate: "2025-08-17T10:00:00.000Z",
+      id: "112",
+      pickupReturnStationId: "1",
+      pickupStation: "Berlin Hbf",
+      returnStation: "Berlin Hbf",
+    },
   ],
   "2": [
     {
@@ -154,6 +182,25 @@ const MOCK_STATION_BOOKINGS = {
       startDate: "2025-08-11T16:00:00.000Z",
       endDate: "2025-08-14T10:00:00.000Z",
       id: "107",
+      pickupReturnStationId: "2",
+      pickupStation: "Munich Hbf",
+      returnStation: "Munich Hbf",
+    },
+
+    {
+      customerName: "Hans Mueller",
+      startDate: "2025-08-13T09:00:00.000Z",
+      endDate: "2025-08-16T17:00:00.000Z",
+      id: "113",
+      pickupReturnStationId: "2",
+      pickupStation: "Munich Hbf",
+      returnStation: "Munich Hbf",
+    },
+    {
+      customerName: "Anna Schmidt",
+      startDate: "2025-08-14T14:00:00.000Z",
+      endDate: "2025-08-17T11:00:00.000Z",
+      id: "114",
       pickupReturnStationId: "2",
       pickupStation: "Munich Hbf",
       returnStation: "Munich Hbf",
@@ -190,15 +237,14 @@ class ApiService {
     };
   }
 
-  // Generate deterministic pseudo-random number based on string seed
   private seededRandom(seed: string): number {
     let hash = 0;
     for (let i = 0; i < seed.length; i++) {
       const char = seed.charCodeAt(i);
       hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      hash = hash & hash;
     }
-    return Math.abs(hash) / 2147483647; // Normalize to 0-1
+    return Math.abs(hash) / 2147483647;
   }
 
   private getDeterministicStatus(

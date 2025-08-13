@@ -93,3 +93,16 @@ export const calculateDuration = (
 };
 
 export const debounce = lodashDebounce;
+
+export const formatDateRange = (start: Date, end: Date): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+    year: start.getFullYear() !== end.getFullYear() ? "numeric" : undefined,
+  };
+
+  const startStr = start.toLocaleDateString("en-US", options);
+  const endStr = end.toLocaleDateString("en-US", options);
+
+  return `${startStr} - ${endStr}`;
+};

@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<Props>(), {
 defineEmits<Emits>();
 
 const { weekDays, weekTitle, weekSubtitle } = useCalendarWeek(
-  props.currentWeek,
-  props.bookings
+  () => props.currentWeek,
+  () => props.bookings
 );
 </script>
