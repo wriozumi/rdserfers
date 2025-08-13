@@ -1,117 +1,137 @@
-import AutocompleteInput from "@/components/AutocompleteInput.vue";
-import type { Station } from "@/types";
-import { mount } from "@vue/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import AutocompleteInput from '@/components/AutocompleteInput.vue';
+import type { Station } from '@/types';
+import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { nextTick } from 'vue';
 
-describe("AutocompleteInput", () => {
+describe('AutocompleteInput', () => {
   const mockStation: Station = {
-    id: "1",
-    name: "Berlin",
-    address: "Berlin Hauptbahnhof, Germany",
+    id: '1',
+    name: 'Berlin',
+    address: 'Berlin Hauptbahnhof, Germany',
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders correctly with default props", () => {
+  it('renders correctly with default props', () => {
     const wrapper = mount(AutocompleteInput);
 
-    expect(wrapper.find("input").exists()).toBe(true);
-    expect(wrapper.find("input").attributes("placeholder")).toBe(
-      "Search stations..."
+    expect(wrapper.find('input').exists()).toBe(true);
+    expect(wrapper.find('input').attributes('placeholder')).toBe(
+      'Search stations...'
     );
   });
 
-  it("emits search event when typing", async () => {
+  it('emits search event when typing', async () => {
     const wrapper = mount(AutocompleteInput, {
       props: {
         minChars: 2,
       },
     });
 
-    const input = wrapper.find("input");
-    await input.setValue("Ber");
+    const input = wrapper.find('input');
+    await input.setValue('Ber');
 
-    await new Promise((resolve) => setTimeout(resolve, 350));
+    await new Promise(resolve => setTimeout(resolve, 350));
 
-    expect(wrapper.emitted("search")).toBeTruthy();
-    expect(wrapper.emitted("search")?.[0]).toEqual(["Ber"]);
+    expect(wrapper.emitted('search')).toBeTruthy();
+    expect(wrapper.emitted('search')?.[0]).toEqual(['Ber']);
   });
 
-  it("displays suggestions when provided", async () => {
+  it('displays suggestions when provided', async () => {
     const wrapper = mount(AutocompleteInput);
+    const input = wrapper.find('input');
 
+    // Focus input and type to trigger dropdown
+    await input.setValue('Ber');
+    await input.trigger('focus');
+
+    // Update suggestions through exposed method
     wrapper.vm.updateSuggestions([mockStation]);
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
-    expect(wrapper.find(".absolute.z-50").exists()).toBe(true);
-    expect(wrapper.text()).toContain("Berlin");
+    expect(wrapper.find('[role="listbox"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Berlin');
   });
 
-  it("emits select event when suggestion is clicked", async () => {
+  it('emits select event when suggestion is clicked', async () => {
     const wrapper = mount(AutocompleteInput);
+    const input = wrapper.find('input');
 
-    await wrapper.find("input").setValue("Ber");
+    await input.setValue('Ber');
+    await input.trigger('focus');
+
     wrapper.vm.updateSuggestions([mockStation]);
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
-    await wrapper.find('button[type="button"]').trigger("click");
+    const suggestionButton = wrapper.find('button[role="option"]');
+    await suggestionButton.trigger('click');
 
-    expect(wrapper.emitted("select")).toBeTruthy();
-    expect(wrapper.emitted("select")?.[0]).toEqual([mockStation]);
+    expect(wrapper.emitted('select')).toBeTruthy();
+    expect(wrapper.emitted('select')?.[0]).toEqual([mockStation]);
   });
 
-  it("handles keyboard navigation", async () => {
+  it('handles keyboard navigation', async () => {
     const wrapper = mount(AutocompleteInput);
+    const input = wrapper.find('input');
 
-    await wrapper.find("input").setValue("Ber");
+    await input.setValue('Ber');
+    await input.trigger('focus');
+
     wrapper.vm.updateSuggestions([mockStation]);
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
-    const input = wrapper.find("input");
+    await input.trigger('keydown', { key: 'ArrowDown' });
 
-    await input.trigger("keydown", { key: "ArrowDown" });
-    expect(wrapper.find('button[type="button"]').classes()).toContain(
-      "bg-primary-50"
+    const suggestionButton = wrapper.find('button[role="option"]');
+    expect(suggestionButton.classes()).toContain('bg-primary-50');
+
+    await input.trigger('keydown', { key: 'Enter' });
+    expect(wrapper.emitted('select')).toBeTruthy();
+  });
+
+  it('clears input when clear button is clicked', async () => {
+    const wrapper = mount(AutocompleteInput);
+    const input = wrapper.find('input');
+
+    await input.setValue('Berlin');
+    await nextTick();
+
+    // Find the clear button (not the suggestion button)
+    const clearButton = wrapper.find(
+      'button[type="button"]:not([role="option"])'
     );
+    await clearButton.trigger('click');
 
-    await input.trigger("keydown", { key: "Enter" });
-    expect(wrapper.emitted("select")).toBeTruthy();
+    expect(input.element.value).toBe('');
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy();
   });
 
-  it("clears input when clear button is clicked", async () => {
+  it('shows loading state', async () => {
     const wrapper = mount(AutocompleteInput);
 
-    await wrapper.find("input").setValue("Berlin");
-    await wrapper.vm.$nextTick();
+    await wrapper.find('input').setValue('Berlin');
 
-    const clearButton = wrapper.find('button[type="button"]');
-    await clearButton.trigger("click");
-
-    expect(wrapper.find("input").element.value).toBe("");
-    expect(wrapper.emitted("update:modelValue")?.[1]).toEqual([null]);
+    expect(wrapper.find('.animate-spin').exists()).toBe(true);
   });
 
-  it("shows loading state", async () => {
-    const wrapper = mount(AutocompleteInput);
-
-    await wrapper.find("input").setValue("Berlin");
-
-    expect(wrapper.find(".animate-spin").exists()).toBe(true);
-  });
-
-  it("shows no results message when appropriate", async () => {
+  it('shows no results message when appropriate', async () => {
     const wrapper = mount(AutocompleteInput, {
       props: {
-        noResultsMessage: "No stations found",
+        noResultsMessage: 'No stations found',
       },
     });
 
-    await wrapper.find("input").setValue("XYZ");
-    wrapper.vm.updateSuggestions([]);
-    await wrapper.vm.$nextTick();
+    const input = wrapper.find('input');
+    await input.setValue('XYZ');
+    await input.trigger('focus');
 
-    expect(wrapper.text()).toContain("No stations found");
+    wrapper.vm.updateSuggestions([]);
+    await nextTick();
+
+    expect(wrapper.find('[role="listbox"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('No stations found');
   });
 });

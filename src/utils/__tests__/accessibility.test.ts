@@ -12,15 +12,15 @@ const mockBooking: Booking = {
   pickupDate: '2025-08-12T10:00:00.000Z',
   returnDate: '2025-08-15T18:00:00.000Z',
   duration: 3,
-  status: 'confirmed'
+  status: 'confirmed',
 };
 
 describe('Accessibility Features', () => {
   it('AutocompleteInput has proper ARIA attributes', () => {
     const wrapper = mount(AutocompleteInput, {
       props: {
-        placeholder: 'Search stations'
-      }
+        placeholder: 'Search stations',
+      },
     });
 
     const input = wrapper.find('input');
@@ -33,8 +33,8 @@ describe('Accessibility Features', () => {
     const wrapper = mount(BookingCard, {
       props: {
         booking: mockBooking,
-        date: new Date('2025-08-12')
-      }
+        date: new Date('2025-08-12'),
+      },
     });
 
     const button = wrapper.find('button');
@@ -46,8 +46,8 @@ describe('Accessibility Features', () => {
     const wrapper = mount(BookingCard, {
       props: {
         booking: mockBooking,
-        date: new Date('2025-08-12')
-      }
+        date: new Date('2025-08-12'),
+      },
     });
 
     await wrapper.find('button').trigger('keydown.enter');

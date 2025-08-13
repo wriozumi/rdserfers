@@ -35,7 +35,11 @@
 
     <div v-else-if="type === 'search'" class="space-y-2">
       <div class="h-4 bg-gray-200 rounded w-1/4"></div>
-      <div v-for="n in count" :key="n" class="p-3 border border-gray-200 rounded space-y-2">
+      <div
+        v-for="n in count"
+        :key="n"
+        class="p-3 border border-gray-200 rounded space-y-2"
+      >
         <div class="h-4 bg-gray-200 rounded w-3/4"></div>
         <div class="h-3 bg-gray-200 rounded w-full"></div>
       </div>
@@ -57,6 +61,6 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   type: 'default',
-  count: 3
+  count: 3,
 });
 </script>

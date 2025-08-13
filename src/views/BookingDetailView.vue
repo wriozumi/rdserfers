@@ -54,15 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
-import ErrorAlert from "../components/ErrorAlert.vue";
-import SkeletonLoader from "../components/common/SkeletonLoader.vue";
-import BookingDetailHeader from "../components/booking/BookingDetailHeader.vue";
-import BookingInfoSection from "../components/booking/BookingInfoSection.vue";
-import CustomerInfoSection from "../components/booking/CustomerInfoSection.vue";
-import EmptyState from "../components/common/EmptyState.vue";
-import { useBookingDetail } from "../composables/useBookingDetail";
+import { computed, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import ErrorAlert from '../components/ErrorAlert.vue';
+import SkeletonLoader from '../components/common/SkeletonLoader.vue';
+import BookingDetailHeader from '../components/booking/BookingDetailHeader.vue';
+import BookingInfoSection from '../components/booking/BookingInfoSection.vue';
+import CustomerInfoSection from '../components/booking/CustomerInfoSection.vue';
+import EmptyState from '../components/common/EmptyState.vue';
+import { useBookingDetail } from '../composables/useBookingDetail';
 
 interface Props {
   id: string;
@@ -78,15 +78,15 @@ const { booking, loading, error, loadBooking, goBack, clearError } =
 
 const loadBookingData = async () => {
   const currentBookingId = bookingId.value;
-  if (currentBookingId && currentBookingId.trim() !== "") {
+  if (currentBookingId && currentBookingId.trim() !== '') {
     console.log(
-      "🔄 BookingDetailView: Loading booking for ID:",
+      '🔄 BookingDetailView: Loading booking for ID:',
       currentBookingId
     );
     await loadBooking();
   } else {
     console.error(
-      "❌ BookingDetailView: Invalid booking ID:",
+      '❌ BookingDetailView: Invalid booking ID:',
       currentBookingId
     );
     goBack();
@@ -98,9 +98,9 @@ watch(
   (newId, oldId) => {
     if (newId !== oldId && newId) {
       console.log(
-        "🔄 BookingDetailView: Booking ID changed from",
+        '🔄 BookingDetailView: Booking ID changed from',
         oldId,
-        "to",
+        'to',
         newId
       );
       loadBookingData();
@@ -111,7 +111,7 @@ watch(
 
 onMounted(() => {
   console.log(
-    "🎯 BookingDetailView: Component mounted with booking ID:",
+    '🎯 BookingDetailView: Component mounted with booking ID:',
     bookingId.value
   );
   loadBookingData();

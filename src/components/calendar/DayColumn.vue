@@ -39,10 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import type { Booking } from "../../types";
-import CalendarIcon from "../icons/CalendarIcon.vue";
-import BookingCard from "./BookingCard.vue";
+import { computed } from 'vue';
+import type { Booking } from '../../types';
+import CalendarIcon from '../icons/CalendarIcon.vue';
+import BookingCard from './BookingCard.vue';
 
 interface Props {
   day: {
@@ -63,51 +63,51 @@ defineEmits<{
 }>();
 
 const formatDayName = (date: Date): string => {
-  return date.toLocaleDateString("en-US", { weekday: "short" });
+  return date.toLocaleDateString('en-US', { weekday: 'short' });
 };
 
 const containerClasses = computed(() => {
   const baseClasses = props.isMobile
-    ? "flex-none w-72 sm:w-80 border-r border-gray-200 last:border-r-0"
-    : "min-h-[400px] p-4";
+    ? 'flex-none w-72 sm:w-80 border-r border-gray-200 last:border-r-0'
+    : 'min-h-[400px] p-4';
 
-  let bgClasses = "";
+  let bgClasses = '';
   if (props.day.isToday) {
-    bgClasses = "bg-blue-50";
+    bgClasses = 'bg-blue-50';
   } else if (props.day.isWeekend && !props.day.isToday) {
-    bgClasses = "bg-gray-50";
+    bgClasses = 'bg-gray-50';
   }
 
   return `${baseClasses} ${bgClasses}`;
 });
 
 const contentClasses = computed(() =>
-  props.isMobile ? "p-3 h-full min-h-[400px]" : ""
+  props.isMobile ? 'p-3 h-full min-h-[400px]' : ''
 );
 
 const headerClasses = computed(() =>
-  props.isMobile ? "mb-3 pb-2 border-b border-gray-200" : "mb-3"
+  props.isMobile ? 'mb-3 pb-2 border-b border-gray-200' : 'mb-3'
 );
 
-const dayNameClasses = computed(() => "text-sm font-medium text-gray-900");
+const dayNameClasses = computed(() => 'text-sm font-medium text-gray-900');
 
 const dayNumberClasses = computed(() => {
-  const baseClasses = "font-semibold";
-  const sizeClasses = props.isMobile ? "text-lg" : "text-xl";
-  const colorClasses = props.day.isToday ? "text-blue-600" : "text-gray-900";
+  const baseClasses = 'font-semibold';
+  const sizeClasses = props.isMobile ? 'text-lg' : 'text-xl';
+  const colorClasses = props.day.isToday ? 'text-blue-600' : 'text-gray-900';
 
   return `${baseClasses} ${sizeClasses} ${colorClasses}`;
 });
 
 const badgeClasses = computed(() => {
   const baseClasses =
-    "flex items-center justify-center text-xs font-medium text-white bg-primary-500 rounded-full";
-  const sizeClasses = props.isMobile ? "w-5 h-5" : "w-6 h-6";
+    'flex items-center justify-center text-xs font-medium text-white bg-primary-500 rounded-full';
+  const sizeClasses = props.isMobile ? 'w-5 h-5' : 'w-6 h-6';
 
   return `${baseClasses} ${sizeClasses}`;
 });
 
 const emptyStateClasses = computed(
-  () => "flex items-center justify-center h-32 text-gray-400"
+  () => 'flex items-center justify-center h-32 text-gray-400'
 );
 </script>

@@ -50,14 +50,14 @@
 </template>
 
 <script setup lang="ts">
-import { onErrorCaptured, ref } from "vue";
+import { onErrorCaptured, ref } from 'vue';
 
 interface Props {
   fallbackMessage?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  fallbackMessage: "An unexpected error occurred",
+  fallbackMessage: 'An unexpected error occurred',
 });
 
 const emit = defineEmits<{
@@ -65,19 +65,19 @@ const emit = defineEmits<{
 }>();
 
 const hasError = ref(false);
-const errorMessage = ref("");
+const errorMessage = ref('');
 
 onErrorCaptured((error: Error) => {
   hasError.value = true;
   errorMessage.value = error.message || props.fallbackMessage;
-  console.error("ErrorBoundary caught:", error);
+  console.error('ErrorBoundary caught:', error);
   return false;
 });
 
 const retry = () => {
   hasError.value = false;
-  errorMessage.value = "";
-  emit("retry");
+  errorMessage.value = '';
+  emit('retry');
 };
 
 defineExpose({

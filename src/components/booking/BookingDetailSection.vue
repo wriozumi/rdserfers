@@ -5,7 +5,7 @@
       <slot name="action" />
     </div>
     <h2 v-else class="text-lg font-medium text-gray-900 mb-4">{{ title }}</h2>
-    
+
     <slot />
   </div>
 </template>

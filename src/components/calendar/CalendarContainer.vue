@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Booking } from "../../types";
-import CalendarContentSection from "./CalendarContentSection.vue";
+import type { Booking } from '../../types';
+import CalendarContentSection from './CalendarContentSection.vue';
 
 interface Props {
   weekRange: { start: Date; end: Date };
@@ -25,10 +25,10 @@ interface Props {
 }
 
 interface Emits {
-  (e: "navigate", direction: "prev" | "next"): void;
-  (e: "goToCurrentWeek"): void;
-  (e: "selectBooking", booking: Booking): void;
-  (e: "refresh"): void;
+  (e: 'navigate', direction: 'prev' | 'next'): void;
+  (e: 'goToCurrentWeek'): void;
+  (e: 'selectBooking', booking: Booking): void;
+  (e: 'refresh'): void;
 }
 
 defineProps<Props>();

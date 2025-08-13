@@ -5,7 +5,7 @@ export function useBookingHelpers() {
   const getBookingTypeText = (booking: Booking, date: Date): string => {
     const pickupDate = new Date(booking.pickupDate);
     const returnDate = new Date(booking.returnDate);
-    
+
     if (isSameDay(pickupDate, date) && isSameDay(returnDate, date)) {
       return 'Pickup & Return';
     } else if (isSameDay(pickupDate, date)) {
@@ -13,20 +13,23 @@ export function useBookingHelpers() {
     } else if (isSameDay(returnDate, date)) {
       return 'Return';
     }
-    
+
     return 'Ongoing';
   };
 
-  const getBookingCardType = (booking: Booking, date: Date): 'pickup' | 'return' | 'ongoing' => {
+  const getBookingCardType = (
+    booking: Booking,
+    date: Date
+  ): 'pickup' | 'return' | 'ongoing' => {
     const pickupDate = new Date(booking.pickupDate);
     const returnDate = new Date(booking.returnDate);
-    
+
     if (isSameDay(pickupDate, date)) {
       return 'pickup';
     } else if (isSameDay(returnDate, date)) {
       return 'return';
     }
-    
+
     return 'ongoing';
   };
 
@@ -37,7 +40,7 @@ export function useBookingHelpers() {
       completed: 'booking-status-completed',
       cancelled: 'booking-status-cancelled',
     };
-    
+
     return statusMap[status] || 'booking-status-default';
   };
 

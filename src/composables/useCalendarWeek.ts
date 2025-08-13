@@ -1,17 +1,22 @@
-import { computed } from "vue";
-import type { Booking } from "../types";
-import { format, getWeekDays, isToday, isWeekend } from "../utils";
-import { getBookingsForDay } from "../utils/dataUtils";
+import { computed } from 'vue';
+import type { Booking } from '../types';
+import { format, getWeekDays, isToday, isWeekend } from '../utils';
+import { getBookingsForDay } from '../utils/dataUtils';
+import { useMemo } from './usePerformance';
 
 export function useCalendarWeek(
   currentWeek: () => Date,
   bookings: () => Booking[]
 ) {
-  const weekDays = computed(() => {
-    const days = getWeekDays(currentWeek());
-    const bookingsValue = bookings();
+  const currentWeekRef = computed(() => currentWeek());
+  const bookingsRef = computed(() => bookings());
 
-    return days.map((date) => {
+  // Memoized week days calculation for better performance
+  const weekDays = useMemo(() => {
+    const days = getWeekDays(currentWeekRef.value);
+    const bookingsValue = bookingsRef.value;
+
+    return days.map(date => {
       const dayBookings = getBookingsForDay(bookingsValue, date);
 
       return {
@@ -21,16 +26,16 @@ export function useCalendarWeek(
         isWeekend: isWeekend(date),
       };
     });
-  });
+  }, [currentWeekRef, bookingsRef]);
 
   const weekTitle = computed(() => {
     const firstDay = weekDays.value[0]?.date;
     const lastDay = weekDays.value[6]?.date;
 
-    if (!firstDay || !lastDay) return "";
+    if (!firstDay || !lastDay) return '';
 
-    const firstMonth = format(firstDay, "MMMM");
-    const lastMonth = format(lastDay, "MMMM");
+    const firstMonth = format(firstDay, 'MMMM');
+    const lastMonth = format(lastDay, 'MMMM');
     const year = firstDay.getFullYear();
 
     if (firstMonth === lastMonth) {
@@ -44,7 +49,7 @@ export function useCalendarWeek(
     const firstDay = weekDays.value[0]?.date;
     const lastDay = weekDays.value[6]?.date;
 
-    if (!firstDay || !lastDay) return "";
+    if (!firstDay || !lastDay) return '';
 
     return `${firstDay.getDate()} - ${lastDay.getDate()}`;
   });

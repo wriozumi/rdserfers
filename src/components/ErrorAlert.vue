@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from "vue";
+import { onUnmounted, ref, watch } from 'vue';
 
 interface Props {
   title?: string;
@@ -64,12 +64,12 @@ interface Props {
 }
 
 interface Emits {
-  (e: "dismiss"): void;
+  (e: 'dismiss'): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: "Error",
-  message: "",
+  title: 'Error',
+  message: '',
   show: false,
   autoHide: true,
   autoHideDelay: 5000,
@@ -81,7 +81,7 @@ const show = ref(props.show);
 
 const dismiss = () => {
   show.value = false;
-  emit("dismiss");
+  emit('dismiss');
 };
 
 let autoHideTimer: ReturnType<typeof setTimeout> | null = null;
@@ -100,7 +100,7 @@ const startAutoHide = () => {
 
 watch(
   () => props.show,
-  (newValue) => {
+  newValue => {
     show.value = newValue;
     if (newValue) {
       startAutoHide();

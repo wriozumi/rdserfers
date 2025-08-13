@@ -12,21 +12,21 @@ import {
   isEqual,
   parseISO,
   startOfWeek,
-} from "date-fns";
-import { debounce as lodashDebounce } from "lodash-es";
+} from 'date-fns';
+import { debounce as lodashDebounce } from 'lodash-es';
 
 export { format };
 
 export const formatDate = (date: Date): string => {
-  return format(date, "EEE, MMM d");
+  return format(date, 'EEE, MMM d');
 };
 
 export const formatDateLong = (date: Date): string => {
-  return format(date, "EEEE, MMMM d, yyyy");
+  return format(date, 'EEEE, MMMM d, yyyy');
 };
 
 export const formatDateISO = (date: Date): string => {
-  return format(date, "yyyy-MM-dd");
+  return format(date, 'yyyy-MM-dd');
 };
 
 export const formatDateTime = (date: Date): string => {
@@ -34,11 +34,11 @@ export const formatDateTime = (date: Date): string => {
 };
 
 export const formatTime = (date: Date): string => {
-  return format(date, "HH:mm");
+  return format(date, 'HH:mm');
 };
 
 export const parseDate = (dateString: string): Date => {
-  return dateString.includes("T") ? parseISO(dateString) : new Date(dateString);
+  return dateString.includes('T') ? parseISO(dateString) : new Date(dateString);
 };
 
 export const isSameDay = (date1: Date, date2: Date): boolean => {
@@ -96,13 +96,13 @@ export const debounce = lodashDebounce;
 
 export const formatDateRange = (start: Date, end: Date): string => {
   const options: Intl.DateTimeFormatOptions = {
-    month: "short",
-    day: "numeric",
-    year: start.getFullYear() !== end.getFullYear() ? "numeric" : undefined,
+    month: 'short',
+    day: 'numeric',
+    year: start.getFullYear() !== end.getFullYear() ? 'numeric' : undefined,
   };
 
-  const startStr = start.toLocaleDateString("en-US", options);
-  const endStr = end.toLocaleDateString("en-US", options);
+  const startStr = start.toLocaleDateString('en-US', options);
+  const endStr = end.toLocaleDateString('en-US', options);
 
   return `${startStr} - ${endStr}`;
 };

@@ -2,7 +2,9 @@
   <BookingDetailSection title="Customer Information">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700">Customer Name</label>
+        <label class="block text-sm font-medium text-gray-700"
+          >Customer Name</label
+        >
         <p class="mt-1 text-sm text-gray-900">{{ booking.customerName }}</p>
       </div>
       <div v-if="booking.customerEmail">

@@ -35,14 +35,14 @@
 </template>
 
 <script setup lang="ts">
-import type { Station } from "../../types";
+import type { Station } from '../../types';
 
 interface Props {
   station: Station;
 }
 
 interface Emits {
-  (e: "clear"): void;
+  (e: 'clear'): void;
 }
 
 defineProps<Props>();

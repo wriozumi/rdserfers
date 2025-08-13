@@ -8,8 +8,18 @@
             class="mr-2 sm:mr-4 p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md"
             @click="$emit('back')"
           >
-            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            <svg
+              class="w-4 h-4 sm:w-5 sm:h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
             </svg>
           </button>
           <h1 class="text-lg sm:text-xl font-semibold text-gray-900">
@@ -17,9 +27,7 @@
           </h1>
         </div>
         <div class="text-xs sm:text-sm text-gray-500">
-          <slot name="action">
-            ID: {{ bookingId }}
-          </slot>
+          <slot name="action"> ID: {{ bookingId }} </slot>
         </div>
       </div>
     </div>

@@ -68,9 +68,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import type { Station } from "../../types";
-import AutocompleteInput from "../AutocompleteInput.vue";
+import { ref } from 'vue';
+import type { Station } from '../../types';
+import AutocompleteInput from '../AutocompleteInput.vue';
 
 interface Props {
   selectedStation: Station | null;
@@ -80,11 +80,11 @@ interface Props {
 }
 
 interface Emits {
-  (e: "update:selectedStation", station: Station | null): void;
-  (e: "search", query: string): void;
-  (e: "select", station: Station): void;
-  (e: "clear"): void;
-  (e: "focus"): void;
+  (e: 'update:selectedStation', station: Station | null): void;
+  (e: 'search', query: string): void;
+  (e: 'select', station: Station): void;
+  (e: 'clear'): void;
+  (e: 'focus'): void;
 }
 
 withDefaults(defineProps<Props>(), {

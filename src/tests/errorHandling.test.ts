@@ -22,12 +22,9 @@ describe('ErrorHandling', () => {
 
   describe('AppError', () => {
     it('should create an AppError with all properties', () => {
-      const error = new AppError(
-        'Test error',
-        'TEST_CODE',
-        400,
-        { key: 'value' }
-      );
+      const error = new AppError('Test error', 'TEST_CODE', 400, {
+        key: 'value',
+      });
 
       expect(error).toBeInstanceOf(Error);
       expect(error.name).toBe('AppError');
@@ -76,7 +73,7 @@ describe('ErrorHandling', () => {
 
       const log = errorHandler.getErrorLog();
       expect(log).toHaveLength(100);
-      
+
       // Should keep the latest 100 errors
       expect(log[0].error.message).toBe('Error 50');
       expect(log[99].error.message).toBe('Error 149');
@@ -104,11 +101,13 @@ describe('ErrorHandling', () => {
     it('should return error when async operation fails', async () => {
       const error = new Error('Async error');
       const asyncFn = vi.fn().mockRejectedValue(error);
-      const result = await handleAsyncError(asyncFn, { component: 'TestComponent' });
+      const result = await handleAsyncError(asyncFn, {
+        component: 'TestComponent',
+      });
 
       expect(result.data).toBeNull();
       expect(result.error).toBe(error);
-      
+
       const log = errorHandler.getErrorLog();
       expect(log).toHaveLength(1);
       expect(log[0].context.component).toBe('TestComponent');
@@ -143,7 +142,7 @@ describe('ErrorHandling', () => {
 
       expect(result.data).toBeNull();
       expect(result.error).toBe(error);
-      
+
       const log = errorHandler.getErrorLog();
       expect(log).toHaveLength(1);
       expect(log[0].context.component).toBe('TestComponent');
@@ -187,7 +186,9 @@ describe('ErrorHandling', () => {
 
     it('should return original message for unrecognized errors', () => {
       const unknownError = new Error('Unknown error occurred');
-      expect(getUserFriendlyMessage(unknownError)).toBe('Unknown error occurred');
+      expect(getUserFriendlyMessage(unknownError)).toBe(
+        'Unknown error occurred'
+      );
     });
 
     it('should return default message for empty error', () => {
@@ -209,7 +210,7 @@ describe('ErrorHandling', () => {
 
     it('should succeed on first attempt', async () => {
       const operation = vi.fn().mockResolvedValue('success');
-      
+
       const resultPromise = withRetry(operation, 3, 100);
       const result = await resultPromise;
 
@@ -218,16 +219,17 @@ describe('ErrorHandling', () => {
     });
 
     it('should retry on failure and eventually succeed', async () => {
-      const operation = vi.fn()
+      const operation = vi
+        .fn()
         .mockRejectedValueOnce(new Error('First failure'))
         .mockRejectedValueOnce(new Error('Second failure'))
         .mockResolvedValue('success');
 
       const resultPromise = withRetry(operation, 3, 100);
-      
+
       // Fast forward through the delays
       vi.runAllTimers();
-      
+
       const result = await resultPromise;
 
       expect(result).toBe('success');
@@ -239,31 +241,32 @@ describe('ErrorHandling', () => {
       const operation = vi.fn().mockRejectedValue(error);
 
       const resultPromise = withRetry(operation, 2, 100);
-      
+
       // Fast forward through the delays
       vi.runAllTimers();
 
       await expect(resultPromise).rejects.toThrow('Persistent failure');
       expect(operation).toHaveBeenCalledTimes(3); // Initial + 2 retries
-      
+
       const log = errorHandler.getErrorLog();
       expect(log.length).toBeGreaterThan(0);
     });
 
     it('should apply exponential backoff with jitter', async () => {
-      const operation = vi.fn()
+      const operation = vi
+        .fn()
         .mockRejectedValueOnce(new Error('First failure'))
         .mockRejectedValueOnce(new Error('Second failure'))
         .mockResolvedValue('success');
 
       const resultPromise = withRetry(operation, 3, 100);
-      
+
       // Check that timers are scheduled
       expect(vi.getTimerCount()).toBe(0); // No initial delay
-      
+
       // Fast forward through all delays
       vi.runAllTimers();
-      
+
       await resultPromise;
       expect(operation).toHaveBeenCalledTimes(3);
     });
@@ -274,18 +277,22 @@ describe('ErrorHandling', () => {
       const context = { component: 'TestComponent' };
 
       const resultPromise = withRetry(operation, 1, 100, context);
-      
+
       vi.runAllTimers();
 
       await expect(resultPromise).rejects.toThrow('Test failure');
-      
+
       const log = errorHandler.getErrorLog();
       expect(log.length).toBeGreaterThan(0);
-      
+
       // Should have retry attempt and final failure logs
-      const retryAttempts = log.filter(entry => entry.context.action === 'retry_attempt');
-      const finalFailure = log.filter(entry => entry.context.action === 'retry_failed');
-      
+      const retryAttempts = log.filter(
+        entry => entry.context.action === 'retry_attempt'
+      );
+      const finalFailure = log.filter(
+        entry => entry.context.action === 'retry_failed'
+      );
+
       expect(retryAttempts).toHaveLength(1);
       expect(finalFailure).toHaveLength(1);
       expect(finalFailure[0].context.component).toBe('TestComponent');

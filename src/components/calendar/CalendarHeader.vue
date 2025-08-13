@@ -1,12 +1,14 @@
 <template>
-  <div class="flex items-center justify-between p-3 md:p-4 border-b border-gray-200">
+  <div
+    class="flex items-center justify-between p-3 md:p-4 border-b border-gray-200"
+  >
     <NavigationButton
       direction="prev"
       full-label="Previous"
       short-label="Prev"
       @click="$emit('navigate', 'prev')"
     />
-    
+
     <div class="text-center flex-1 mx-2">
       <h2 class="text-sm md:text-lg font-semibold text-gray-900">
         {{ weekTitle }}
@@ -15,7 +17,7 @@
         {{ weekSubtitle }}
       </p>
     </div>
-    
+
     <NavigationButton
       direction="next"
       full-label="Next"

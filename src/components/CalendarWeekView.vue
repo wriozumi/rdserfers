@@ -45,11 +45,11 @@
 </template>
 
 <script setup lang="ts">
-import { useCalendarWeek } from "../composables/useCalendarWeek";
-import type { Booking } from "../types";
-import SkeletonLoader from "./common/SkeletonLoader.vue";
-import CalendarHeader from "./calendar/CalendarHeader.vue";
-import DayColumn from "./calendar/DayColumn.vue";
+import { useCalendarWeek } from '../composables/useCalendarWeek';
+import type { Booking } from '../types';
+import SkeletonLoader from './common/SkeletonLoader.vue';
+import CalendarHeader from './calendar/CalendarHeader.vue';
+import DayColumn from './calendar/DayColumn.vue';
 
 interface Props {
   currentWeek: Date;
@@ -58,8 +58,8 @@ interface Props {
 }
 
 interface Emits {
-  (e: "navigate", direction: "prev" | "next"): void;
-  (e: "selectBooking", booking: Booking): void;
+  (e: 'navigate', direction: 'prev' | 'next'): void;
+  (e: 'selectBooking', booking: Booking): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -9,7 +9,9 @@
         :disabled="disabled"
         :aria-label="placeholder"
         :aria-expanded="showDropdown"
-        :aria-activedescendant="selectedIndex >= 0 ? `suggestion-${selectedIndex}` : undefined"
+        :aria-activedescendant="
+          selectedIndex >= 0 ? `suggestion-${selectedIndex}` : undefined
+        "
         aria-autocomplete="list"
         role="combobox"
         class="w-full px-4 py-3 pr-10 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
@@ -97,9 +99,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Station } from "@/types";
-import { debounce } from "@/utils";
-import { nextTick, ref, watch } from "vue";
+import type { Station } from '@/types';
+import { debounce } from '@/utils';
+import { nextTick, ref, watch } from 'vue';
 
 interface Props {
   modelValue?: Station | null;
@@ -112,18 +114,18 @@ interface Props {
 }
 
 interface Emits {
-  (e: "update:modelValue", value: Station | null): void;
-  (e: "search", query: string): void;
-  (e: "select", station: Station): void;
+  (e: 'update:modelValue', value: Station | null): void;
+  (e: 'search', query: string): void;
+  (e: 'select', station: Station): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: "Search stations...",
+  placeholder: 'Search stations...',
   disabled: false,
-  error: "",
+  error: '',
   minChars: 2,
   debounceMs: 300,
-  noResultsMessage: "No stations found",
+  noResultsMessage: 'No stations found',
 });
 
 const emit = defineEmits<Emits>();
@@ -131,7 +133,7 @@ const emit = defineEmits<Emits>();
 // Template refs
 const inputRef = ref<HTMLInputElement>();
 
-const query = ref("");
+const query = ref('');
 const suggestions = ref<Station[]>([]);
 const selectedIndex = ref(-1);
 const showDropdown = ref(false);
@@ -140,7 +142,7 @@ const isFocused = ref(false);
 
 const debouncedSearch = debounce((searchQuery: string) => {
   if (searchQuery.length >= props.minChars) {
-    emit("search", searchQuery);
+    emit('search', searchQuery);
   } else {
     suggestions.value = [];
   }
@@ -151,7 +153,7 @@ const handleInput = () => {
 
   if (query.value.length === 0) {
     suggestions.value = [];
-    emit("update:modelValue", null);
+    emit('update:modelValue', null);
     return;
   }
 
@@ -182,24 +184,24 @@ const handleKeydown = (event: KeyboardEvent) => {
   if (!showDropdown.value || suggestions.value.length === 0) return;
 
   switch (event.key) {
-    case "ArrowDown":
+    case 'ArrowDown':
       event.preventDefault();
       selectedIndex.value = Math.min(
         selectedIndex.value + 1,
         suggestions.value.length - 1
       );
       break;
-    case "ArrowUp":
+    case 'ArrowUp':
       event.preventDefault();
       selectedIndex.value = Math.max(selectedIndex.value - 1, -1);
       break;
-    case "Enter":
+    case 'Enter':
       event.preventDefault();
       if (selectedIndex.value >= 0) {
         selectSuggestion(suggestions.value[selectedIndex.value]);
       }
       break;
-    case "Escape":
+    case 'Escape':
       showDropdown.value = false;
       inputRef.value?.blur();
       break;
@@ -212,19 +214,19 @@ const selectSuggestion = (station: Station) => {
   showDropdown.value = false;
   selectedIndex.value = -1;
 
-  emit("update:modelValue", station);
-  emit("select", station);
+  emit('update:modelValue', station);
+  emit('select', station);
 
   inputRef.value?.blur();
 };
 
 const clear = () => {
-  query.value = "";
+  query.value = '';
   suggestions.value = [];
   showDropdown.value = false;
   selectedIndex.value = -1;
 
-  emit("update:modelValue", null);
+  emit('update:modelValue', null);
 
   nextTick(() => {
     inputRef.value?.focus();
@@ -246,11 +248,11 @@ const updateSuggestions = (newSuggestions: Station[]) => {
 
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     if (newValue) {
       query.value = newValue.name;
     } else if (!isFocused.value) {
-      query.value = "";
+      query.value = '';
     }
   },
   { immediate: true }

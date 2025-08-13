@@ -5,10 +5,7 @@
         class="animate-spin rounded-full border-4 border-gray-200"
         :class="[sizeClass, colorClass]"
       ></div>
-      <div
-        v-if="text"
-        class="mt-3 text-sm text-gray-600 text-center"
-      >
+      <div v-if="text" class="mt-3 text-sm text-gray-600 text-center">
         {{ text }}
       </div>
     </div>

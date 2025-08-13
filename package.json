@@ -9,7 +9,11 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "format": "prettier --write \"src/**/*.{vue,ts,js}\"",
+    "format:check": "prettier --check \"src/**/*.{vue,ts,js}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{vue,ts,js}\"",
+    "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
@@ -31,7 +35,10 @@
     "@types/lodash-es": "^4.17.12",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "jsdom": "^26.1.0",
+    "prettier": "^3.6.2",
     "typescript": "~5.8.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.5"

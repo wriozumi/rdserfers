@@ -121,8 +121,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Booking } from "../../types";
-import CalendarWeekView from "../CalendarWeekView.vue";
+import type { Booking } from '../../types';
+import CalendarWeekView from '../CalendarWeekView.vue';
 
 interface Props {
   bookings: Booking[];
@@ -133,10 +133,10 @@ interface Props {
 }
 
 interface Emits {
-  (e: "navigate", direction: "prev" | "next"): void;
-  (e: "goToToday"): void;
-  (e: "refresh"): void;
-  (e: "selectBooking", booking: Booking): void;
+  (e: 'navigate', direction: 'prev' | 'next'): void;
+  (e: 'goToToday'): void;
+  (e: 'refresh'): void;
+  (e: 'selectBooking', booking: Booking): void;
 }
 
 withDefaults(defineProps<Props>(), {

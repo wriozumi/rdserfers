@@ -32,7 +32,11 @@ export interface ErrorContext {
 
 export class ErrorHandler {
   private static instance: ErrorHandler;
-  private errorLog: Array<{ error: Error; context: ErrorContext; timestamp: number }> = [];
+  private errorLog: Array<{
+    error: Error;
+    context: ErrorContext;
+    timestamp: number;
+  }> = [];
 
   static getInstance(): ErrorHandler {
     if (!ErrorHandler.instance) {
@@ -43,7 +47,7 @@ export class ErrorHandler {
 
   logError(error: Error, context: ErrorContext = {}): void {
     const timestamp = Date.now();
-    
+
     const logEntry = {
       error,
       context: {
@@ -74,7 +78,11 @@ export class ErrorHandler {
     // this.sendToErrorService(logEntry);
   }
 
-  getErrorLog(): Array<{ error: Error; context: ErrorContext; timestamp: number }> {
+  getErrorLog(): Array<{
+    error: Error;
+    context: ErrorContext;
+    timestamp: number;
+  }> {
     return [...this.errorLog];
   }
 
@@ -186,7 +194,7 @@ export const withRetry = async <T>(
         ErrorHandler.getInstance().logError(lastError, {
           ...context,
           action: 'retry_failed',
-          details: { maxRetries, attempt }
+          details: { maxRetries, attempt },
         });
         throw lastError;
       }
@@ -194,7 +202,7 @@ export const withRetry = async <T>(
       ErrorHandler.getInstance().logError(lastError, {
         ...context,
         action: 'retry_attempt',
-        details: { attempt, maxRetries }
+        details: { attempt, maxRetries },
       });
     }
   }

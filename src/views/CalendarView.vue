@@ -75,21 +75,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { apiService } from "../services/api";
-import { useAppStore } from "../stores/app";
-import type { Booking, Station } from "../types";
-import { formatDateRange } from "../utils";
+import { apiService } from '../services/api';
+import { useAppStore } from '../stores/app';
+import type { Booking, Station } from '../types';
+import { formatDateRange } from '../utils';
 
-import CalendarContainer from "../components/calendar/CalendarContainer.vue";
-import SelectedStationCard from "../components/calendar/SelectedStationCard.vue";
-import StationSearchSection from "../components/calendar/StationSearchSection.vue";
-import WelcomeState from "../components/calendar/WelcomeState.vue";
-import ErrorBoundary from "../components/common/ErrorBoundary.vue";
-import GlobalErrorAlert from "../components/common/GlobalErrorAlert.vue";
-import DashboardHeader from "../components/layout/DashboardHeader.vue";
+import CalendarContainer from '../components/calendar/CalendarContainer.vue';
+import SelectedStationCard from '../components/calendar/SelectedStationCard.vue';
+import StationSearchSection from '../components/calendar/StationSearchSection.vue';
+import WelcomeState from '../components/calendar/WelcomeState.vue';
+import ErrorBoundary from '../components/common/ErrorBoundary.vue';
+import GlobalErrorAlert from '../components/common/GlobalErrorAlert.vue';
+import DashboardHeader from '../components/layout/DashboardHeader.vue';
 
 const router = useRouter();
 const store = useAppStore();
@@ -126,8 +126,8 @@ const handleStationSearch = async (query: string) => {
     stationSearchRef.value?.updateSuggestions(stations);
   } catch (err) {
     searchError.value =
-      err instanceof Error ? err.message : "Failed to search stations";
-    console.error("❌ Error searching stations:", err);
+      err instanceof Error ? err.message : 'Failed to search stations';
+    console.error('❌ Error searching stations:', err);
     stationSearchRef.value?.updateSuggestions([]);
   } finally {
     store.setSearchLoading(false);
@@ -144,7 +144,7 @@ const clearStation = () => {
   searchError.value = null;
 };
 
-const navigateWeek = (direction: "prev" | "next") => {
+const navigateWeek = (direction: 'prev' | 'next') => {
   store.navigateWeek(direction);
 };
 
@@ -158,8 +158,8 @@ const refreshData = () => {
 };
 
 const handleBookingClick = (booking: Booking) => {
-  if (!booking || !booking.id || booking.id.trim() === "") {
-    console.warn("Invalid booking provided for navigation");
+  if (!booking || !booking.id || booking.id.trim() === '') {
+    console.warn('Invalid booking provided for navigation');
     return;
   }
 

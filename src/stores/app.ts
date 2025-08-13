@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
-import { computed, ref } from "vue";
-import { apiService } from "../services/api";
-import type { Booking, BookingDetail, Station } from "../types";
-import { addWeeks, getWeekRange } from "../utils";
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
+import { apiService } from '../services/api';
+import type { Booking, BookingDetail, Station } from '../types';
+import { addWeeks, getWeekRange } from '../utils';
 
-export const useAppStore = defineStore("app", () => {
+export const useAppStore = defineStore('app', () => {
   const selectedStation = ref<Station | null>(null);
   const currentWeek = ref<Date>(new Date());
   const bookings = ref<Booking[]>([]);
@@ -44,8 +44,8 @@ export const useAppStore = defineStore("app", () => {
     }
   };
 
-  const navigateWeek = async (direction: "prev" | "next") => {
-    const weeks = direction === "next" ? 1 : -1;
+  const navigateWeek = async (direction: 'prev' | 'next') => {
+    const weeks = direction === 'next' ? 1 : -1;
     currentWeek.value = addWeeks(currentWeek.value, weeks);
     if (selectedStation.value) {
       await loadBookings();
@@ -72,7 +72,7 @@ export const useAppStore = defineStore("app", () => {
       retryCount.value = 0;
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to load bookings";
+        err instanceof Error ? err.message : 'Failed to load bookings';
 
       if (retryCount.value < maxRetries) {
         retryCount.value++;
@@ -83,7 +83,7 @@ export const useAppStore = defineStore("app", () => {
         setTimeout(() => loadBookings(true), 1000 * retryCount.value);
       } else {
         error.value = `${errorMessage}. Please try again or contact support.`;
-        console.error("Max retries exceeded for loading bookings:", err);
+        console.error('Max retries exceeded for loading bookings:', err);
       }
     } finally {
       loading.value = false;
@@ -91,9 +91,9 @@ export const useAppStore = defineStore("app", () => {
   };
 
   const loadBookingDetail = async (bookingId: string) => {
-    if (!bookingId || bookingId.trim() === "") {
-      error.value = "Invalid booking ID provided";
-      console.error("❌ Invalid booking ID provided");
+    if (!bookingId || bookingId.trim() === '') {
+      error.value = 'Invalid booking ID provided';
+      console.error('❌ Invalid booking ID provided');
       return;
     }
 
@@ -106,19 +106,19 @@ export const useAppStore = defineStore("app", () => {
 
       if (!bookingDetail) {
         error.value =
-          "Booking not found. It may have been deleted or you may not have permission to view it.";
-        console.warn("⚠️ Booking not found for ID:", bookingId);
+          'Booking not found. It may have been deleted or you may not have permission to view it.';
+        console.warn('⚠️ Booking not found for ID:', bookingId);
         selectedBooking.value = null;
       } else {
         selectedBooking.value = bookingDetail;
-        console.log("✅ Successfully loaded booking detail:", bookingDetail);
+        console.log('✅ Successfully loaded booking detail:', bookingDetail);
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to load booking details";
+        err instanceof Error ? err.message : 'Failed to load booking details';
       error.value = errorMessage;
       selectedBooking.value = null;
-      console.error("❌ Error loading booking detail:", err);
+      console.error('❌ Error loading booking detail:', err);
     } finally {
       loading.value = false;
     }
@@ -136,7 +136,7 @@ export const useAppStore = defineStore("app", () => {
     selectedBooking.value = null;
     error.value = null;
     loading.value = false;
-    console.log("🧹 Cleared selected booking state");
+    console.log('🧹 Cleared selected booking state');
   };
 
   const refreshData = async () => {
