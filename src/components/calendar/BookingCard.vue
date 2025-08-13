@@ -22,13 +22,7 @@
           </p>
         </div>
 
-        <div v-if="!isMobile" class="ml-2 flex-shrink-0">
-          <span :class="statusClasses">
-            {{ booking.status }}
-          </span>
-        </div>
-
-        <div v-if="isMobile" class="flex items-center justify-between mt-2">
+        <div class="flex items-center justify-between mt-2">
           <span :class="statusClasses">
             {{ booking.status }}
           </span>
@@ -83,19 +77,19 @@ const cardClasses = computed(() => {
 });
 
 const contentClasses = computed(() =>
-  props.isMobile ? 'space-y-1' : 'flex items-center justify-between booking-card-content'
+  'space-y-1 booking-card-content'
 );
 
 const nameClasses = computed(() =>
-  props.isMobile ? 'text-sm font-medium' : 'text-xs lg:text-sm xl:text-base font-medium truncate'
+  'text-sm lg:text-base font-medium'
 );
 
 const typeClasses = computed(() =>
-  props.isMobile ? 'text-xs text-gray-600' : 'text-xs lg:text-sm text-gray-600 truncate'
+  'text-xs lg:text-sm text-gray-600'
 );
 
 const vehicleClasses = computed(() =>
-  props.isMobile ? 'text-xs text-gray-500' : 'text-xs lg:text-sm text-gray-500 truncate'
+  'text-xs lg:text-sm text-gray-500'
 );
 
 const statusClasses = computed(() => {
