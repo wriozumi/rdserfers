@@ -1,3 +1,4 @@
+import { apiConfig } from "../config/api";
 import type { Booking, BookingDetail, Station } from "../types";
 import { calculateDuration } from "../utils";
 
@@ -290,6 +291,37 @@ const filterBookingsByDateRange = (
 };
 
 class ApiService {
+  private async fetchFromApi<T>(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<T> {
+    if (apiConfig.useMock) {
+      throw new Error("Mock API - use mock methods");
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), apiConfig.timeout);
+
+    try {
+      const response = await fetch(`${apiConfig.baseUrl}${endpoint}`, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      return await response.json();
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   private transformMockBooking(mockBooking: any, stationName: string): Booking {
     return {
       id: mockBooking.id,
@@ -315,8 +347,14 @@ class ApiService {
   }
 
   async searchStations(query: string): Promise<Station[]> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    return searchStations(MOCK_STATIONS, query);
+    if (apiConfig.useMock) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      return searchStations(MOCK_STATIONS, query);
+    }
+
+    return this.fetchFromApi<Station[]>(
+      `/stations?search=${encodeURIComponent(query)}`
+    );
   }
 
   async getAllStations(): Promise<Station[]> {
@@ -332,20 +370,30 @@ class ApiService {
   async getBookingDetail(id: string): Promise<BookingDetail | null> {
     if (!id?.trim()) return null;
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    if (apiConfig.useMock) {
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
-    for (const [stationId, bookings] of Object.entries(MOCK_STATION_BOOKINGS)) {
-      const mockBooking = bookings.find((b: any) => b.id === id);
-      if (mockBooking) {
-        const station = findStationById(MOCK_STATIONS, stationId);
-        const booking = this.transformMockBooking(
-          mockBooking,
-          station?.name || "Unknown Station"
-        );
-        return this.generateBookingDetail(booking);
+      for (const [stationId, bookings] of Object.entries(
+        MOCK_STATION_BOOKINGS
+      )) {
+        const mockBooking = bookings.find((b: any) => b.id === id);
+        if (mockBooking) {
+          const station = findStationById(MOCK_STATIONS, stationId);
+          const booking = this.transformMockBooking(
+            mockBooking,
+            station?.name || "Unknown Station"
+          );
+          return this.generateBookingDetail(booking);
+        }
       }
+      return null;
     }
-    return null;
+
+    try {
+      return await this.fetchFromApi<BookingDetail>(`/bookings/${id}`);
+    } catch {
+      return null;
+    }
   }
 
   async getBookingsForStation(

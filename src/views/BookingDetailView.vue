@@ -7,8 +7,8 @@
     />
 
     <main class="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
-      <div v-if="loading" class="text-center py-12">
-        <LoadingSpinner size="lg" text="Loading booking details..." />
+      <div v-if="loading" class="py-12">
+        <SkeletonLoader type="booking-detail" />
       </div>
 
       <div v-else-if="booking" class="space-y-6">
@@ -57,7 +57,7 @@
 import { computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import ErrorAlert from "../components/ErrorAlert.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
+import SkeletonLoader from "../components/common/SkeletonLoader.vue";
 import BookingDetailHeader from "../components/booking/BookingDetailHeader.vue";
 import BookingInfoSection from "../components/booking/BookingInfoSection.vue";
 import CustomerInfoSection from "../components/booking/CustomerInfoSection.vue";

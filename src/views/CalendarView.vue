@@ -1,71 +1,76 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <DashboardHeader title="RoadSurfer Dashboard">
-      <template #actions>
-        <div v-if="error && !loading" class="flex items-center space-x-2">
-          <button
-            @click="refreshData"
-            class="inline-flex items-center px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 shadow-sm text-xs sm:text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-            :disabled="loading"
-          >
-            <svg
-              class="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <ErrorBoundary @retry="refreshData">
+      <DashboardHeader title="RoadSurfer Dashboard">
+        <template #actions>
+          <div v-if="error && !loading" class="flex items-center space-x-2">
+            <button
+              @click="refreshData"
+              class="inline-flex items-center px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 shadow-sm text-xs sm:text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              :disabled="loading"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <span class="hidden sm:inline">Retry</span>
-            <span class="sm:hidden">Retry</span>
-          </button>
-        </div>
-      </template>
-    </DashboardHeader>
+              <svg
+                class="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              <span class="hidden sm:inline">Retry</span>
+              <span class="sm:hidden">Retry</span>
+            </button>
+          </div>
+        </template>
+      </DashboardHeader>
 
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-      <GlobalErrorAlert
-        :show="!!(error && !loading)"
-        :message="error || ''"
-        :retrying="loading"
-        @retry="refreshData"
-      />
-
-      <StationSearchSection
-        ref="stationSearchRef"
-        :selected-station="selectedStation"
-        :error="searchError || undefined"
-        :loading="loading"
-        :search-loading="searchLoading"
-        @update:selected-station="handleStationUpdate"
-        @search="handleStationSearch"
-        @select="handleStationSelect"
-        @clear="clearStation"
-      />
-
-      <div v-if="selectedStation" class="space-y-6">
-        <SelectedStationCard :station="selectedStation" @clear="clearStation" />
-
-        <CalendarContainer
-          :week-range="weekRange"
-          :week-bookings="weekBookings"
-          :week-title="weekTitle"
-          :loading="loading"
-          :is-empty="!!isEmpty"
-          @navigate="navigateWeek"
-          @go-to-current-week="goToCurrentWeek"
-          @refresh="refreshData"
-          @select-booking="handleBookingClick"
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <GlobalErrorAlert
+          :show="!!(error && !loading)"
+          :message="error || ''"
+          :retrying="loading"
+          @retry="refreshData"
         />
-      </div>
 
-      <WelcomeState v-else />
-    </div>
+        <StationSearchSection
+          ref="stationSearchRef"
+          :selected-station="selectedStation"
+          :error="searchError || undefined"
+          :loading="loading"
+          :search-loading="searchLoading"
+          @update:selected-station="handleStationUpdate"
+          @search="handleStationSearch"
+          @select="handleStationSelect"
+          @clear="clearStation"
+        />
+
+        <div v-if="selectedStation" class="space-y-6">
+          <SelectedStationCard
+            :station="selectedStation"
+            @clear="clearStation"
+          />
+
+          <CalendarContainer
+            :week-range="weekRange"
+            :week-bookings="weekBookings"
+            :week-title="weekTitle"
+            :loading="loading"
+            :is-empty="!!isEmpty"
+            @navigate="navigateWeek"
+            @go-to-current-week="goToCurrentWeek"
+            @refresh="refreshData"
+            @select-booking="handleBookingClick"
+          />
+        </div>
+
+        <WelcomeState v-else />
+      </div>
+    </ErrorBoundary>
   </div>
 </template>
 
@@ -82,6 +87,7 @@ import CalendarContainer from "../components/calendar/CalendarContainer.vue";
 import SelectedStationCard from "../components/calendar/SelectedStationCard.vue";
 import StationSearchSection from "../components/calendar/StationSearchSection.vue";
 import WelcomeState from "../components/calendar/WelcomeState.vue";
+import ErrorBoundary from "../components/common/ErrorBoundary.vue";
 import GlobalErrorAlert from "../components/common/GlobalErrorAlert.vue";
 import DashboardHeader from "../components/layout/DashboardHeader.vue";
 

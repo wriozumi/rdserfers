@@ -39,7 +39,7 @@
       v-if="loading"
       class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg"
     >
-      <LoadingSpinner size="md" text="Loading bookings..." />
+      <SkeletonLoader type="calendar" />
     </div>
   </div>
 </template>
@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { useCalendarWeek } from "../composables/useCalendarWeek";
 import type { Booking } from "../types";
-import LoadingSpinner from "./LoadingSpinner.vue";
+import SkeletonLoader from "./common/SkeletonLoader.vue";
 import CalendarHeader from "./calendar/CalendarHeader.vue";
 import DayColumn from "./calendar/DayColumn.vue";
 

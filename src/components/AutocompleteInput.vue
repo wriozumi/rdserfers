@@ -7,6 +7,11 @@
         type="text"
         :placeholder="placeholder"
         :disabled="disabled"
+        :aria-label="placeholder"
+        :aria-expanded="showDropdown"
+        :aria-activedescendant="selectedIndex >= 0 ? `suggestion-${selectedIndex}` : undefined"
+        aria-autocomplete="list"
+        role="combobox"
         class="w-full px-4 py-3 pr-10 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
         :class="{
           'border-red-300 focus:border-red-500 focus:ring-red-500': error,
@@ -54,6 +59,8 @@
 
     <div
       v-if="showDropdown && (suggestions.length > 0 || noResultsMessage)"
+      role="listbox"
+      :aria-label="`${suggestions.length} stations found`"
       class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
     >
       <div
@@ -66,7 +73,11 @@
       <button
         v-for="(suggestion, index) in suggestions"
         :key="suggestion.id"
+        :id="`suggestion-${index}`"
         type="button"
+        role="option"
+        :aria-selected="index === selectedIndex"
+        :aria-label="`${suggestion.name}, ${suggestion.address}`"
         class="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-200"
         :class="{
           'bg-primary-50 text-primary-900': index === selectedIndex,
