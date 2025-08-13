@@ -67,7 +67,7 @@ const cardType = computed(() => getBookingCardType(props.booking, props.date));
 
 const cardClasses = computed(() => {
   const baseClasses =
-    'w-full rounded-md cursor-pointer booking-card-hover button-press focus-ring text-left border-l-4';
+    'w-full rounded-md cursor-pointer booking-card-hover button-press focus-ring text-left border-l-4 booking-card';
 
   const typeClassesMap = {
     pickup:
@@ -77,30 +77,30 @@ const cardClasses = computed(() => {
       'border-blue-400 bg-blue-50 hover:bg-blue-100 hover:border-blue-500',
   };
 
-  const sizeClasses = props.isMobile ? 'p-3' : 'p-2';
+  const sizeClasses = props.isMobile ? 'p-3' : 'p-2 lg:p-3 xl:p-4';
 
   return `${baseClasses} ${typeClassesMap[cardType.value]} ${sizeClasses}`;
 });
 
 const contentClasses = computed(() =>
-  props.isMobile ? 'space-y-1' : 'flex items-center justify-between'
+  props.isMobile ? 'space-y-1' : 'flex items-center justify-between booking-card-content'
 );
 
 const nameClasses = computed(() =>
-  props.isMobile ? 'text-sm font-medium' : 'text-xs font-medium truncate'
+  props.isMobile ? 'text-sm font-medium' : 'text-xs lg:text-sm xl:text-base font-medium truncate'
 );
 
 const typeClasses = computed(() =>
-  props.isMobile ? 'text-xs text-gray-600' : 'text-xs text-gray-600 truncate'
+  props.isMobile ? 'text-xs text-gray-600' : 'text-xs lg:text-sm text-gray-600 truncate'
 );
 
 const vehicleClasses = computed(() =>
-  props.isMobile ? 'text-xs text-gray-500' : 'text-xs text-gray-500 truncate'
+  props.isMobile ? 'text-xs text-gray-500' : 'text-xs lg:text-sm text-gray-500 truncate'
 );
 
 const statusClasses = computed(() => {
   const baseClasses =
-    'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium';
+    'inline-flex items-center px-2 py-0.5 rounded text-xs lg:text-sm font-medium';
 
   const statusColorMap = {
     confirmed: 'bg-blue-100 text-blue-800',

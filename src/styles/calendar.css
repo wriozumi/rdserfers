@@ -47,3 +47,30 @@
 .day-weekend {
   @apply bg-gray-50;
 }
+
+/* Responsive calendar grid */
+.calendar-week-grid {
+  @apply min-w-0;
+}
+
+.calendar-week-grid > * {
+  @apply min-w-0;
+}
+
+/* Ensure day columns don't get squeezed */
+@media (min-width: 1024px) {
+  .calendar-week-grid > * {
+    @apply min-w-[140px] xl:min-w-[160px];
+  }
+}
+
+/* Booking card responsive improvements */
+@media (min-width: 1024px) {
+  .booking-card {
+    @apply min-w-0;
+  }
+
+  .booking-card-content {
+    @apply min-w-0;
+  }
+}

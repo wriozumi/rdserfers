@@ -26,7 +26,7 @@
 
     <div class="hidden lg:block">
       <div
-        class="grid grid-cols-7 divide-x divide-gray-200"
+        class="grid grid-cols-7 divide-x divide-gray-200 calendar-week-grid"
         data-testid="calendar-week-grid"
       >
         <DayColumn

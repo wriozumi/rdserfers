@@ -69,7 +69,7 @@ const formatDayName = (date: Date): string => {
 const containerClasses = computed(() => {
   const baseClasses = props.isMobile
     ? 'flex-none w-72 sm:w-80 border-r border-gray-200 last:border-r-0'
-    : 'min-h-[400px] p-4';
+    : 'min-h-[400px] p-3 lg:p-4 xl:p-5';
 
   let bgClasses = '';
   if (props.day.isToday) {
