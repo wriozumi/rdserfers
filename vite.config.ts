@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/rdserfer/', // GitHub Pages repository name
+  base: '/rdserfers/', // GitHub Pages repository name
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
