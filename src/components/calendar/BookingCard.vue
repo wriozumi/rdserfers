@@ -1,38 +1,40 @@
 <template>
-  <button
-    type="button"
-    :class="cardClasses"
-    :aria-label="`View booking details for ${booking.customerName}, ${bookingTypeText}, status: ${booking.status}`"
-    @click="$emit('select', booking)"
-    @keydown.enter="$emit('select', booking)"
-    @keydown.space.prevent="$emit('select', booking)"
-  >
-    <div :class="contentClasses">
-      <div class="flex-1 min-w-0">
-        <p :class="nameClasses">
-          {{ booking.customerName }}
-        </p>
-        <p :class="typeClasses">
-          {{ bookingTypeText }}
-        </p>
-        <p :class="vehicleClasses">
-          {{ booking.vehicleModel || 'Vehicle TBD' }}
-        </p>
-      </div>
+  <Transition name="scale" appear>
+    <button
+      type="button"
+      :class="cardClasses"
+      :aria-label="`View booking details for ${booking.customerName}, ${bookingTypeText}, status: ${booking.status}`"
+      @click="$emit('select', booking)"
+      @keydown.enter="$emit('select', booking)"
+      @keydown.space.prevent="$emit('select', booking)"
+    >
+      <div :class="contentClasses">
+        <div class="flex-1 min-w-0">
+          <p :class="nameClasses">
+            {{ booking.customerName }}
+          </p>
+          <p :class="typeClasses">
+            {{ bookingTypeText }}
+          </p>
+          <p :class="vehicleClasses">
+            {{ booking.vehicleModel || 'Vehicle TBD' }}
+          </p>
+        </div>
 
-      <div v-if="!isMobile" class="ml-2 flex-shrink-0">
-        <span :class="statusClasses">
-          {{ booking.status }}
-        </span>
-      </div>
+        <div v-if="!isMobile" class="ml-2 flex-shrink-0">
+          <span :class="statusClasses">
+            {{ booking.status }}
+          </span>
+        </div>
 
-      <div v-if="isMobile" class="flex items-center justify-between mt-2">
-        <span :class="statusClasses">
-          {{ booking.status }}
-        </span>
+        <div v-if="isMobile" class="flex items-center justify-between mt-2">
+          <span :class="statusClasses">
+            {{ booking.status }}
+          </span>
+        </div>
       </div>
-    </div>
-  </button>
+    </button>
+  </Transition>
 </template>
 
 <script setup lang="ts">
@@ -64,7 +66,7 @@ const cardType = computed(() => getBookingCardType(props.booking, props.date));
 
 const cardClasses = computed(() => {
   const baseClasses =
-    'w-full rounded-md cursor-pointer transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 text-left border-l-4 hover:scale-105 transform transition-transform';
+    'w-full rounded-md cursor-pointer booking-card-hover button-press focus-ring text-left border-l-4';
 
   const typeClassesMap = {
     pickup:

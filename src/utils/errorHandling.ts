@@ -61,21 +61,16 @@ export class ErrorHandler {
 
     this.errorLog.push(logEntry);
 
-    // Keep only last 100 errors in memory
     if (this.errorLog.length > 100) {
       this.errorLog = this.errorLog.slice(-100);
     }
 
-    // Log to console in development
     if (import.meta.env.DEV) {
       console.group(`🚨 Error in ${context.component || 'Unknown Component'}`);
       console.error('Error:', error);
       console.info('Context:', context);
       console.groupEnd();
     }
-
-    // In production, you would send this to an error reporting service
-    // this.sendToErrorService(logEntry);
   }
 
   getErrorLog(): Array<{
@@ -119,7 +114,6 @@ export const handleSyncError = <T>(
   }
 };
 
-// Utility function to create user-friendly error messages
 export const getUserFriendlyMessage = (error: Error): string => {
   if (error instanceof AppError && error.code) {
     switch (error.code) {
@@ -148,7 +142,6 @@ export const getUserFriendlyMessage = (error: Error): string => {
     }
   }
 
-  // Generic error messages based on common error patterns
   if (error.message.toLowerCase().includes('network')) {
     return 'Network error. Please check your connection and try again.';
   }
@@ -168,7 +161,6 @@ export const getUserFriendlyMessage = (error: Error): string => {
   return error.message || 'An unexpected error occurred. Please try again.';
 };
 
-// Retry utility with exponential backoff
 export const withRetry = async <T>(
   operation: () => Promise<T>,
   maxRetries = 3,
@@ -180,9 +172,8 @@ export const withRetry = async <T>(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       if (attempt > 0) {
-        // Exponential backoff with jitter
         const delay = baseDelay * Math.pow(2, attempt - 1);
-        const jitter = Math.random() * 0.3; // ±30% jitter
+        const jitter = Math.random() * 0.3;
         await new Promise(resolve => setTimeout(resolve, delay * (1 + jitter)));
       }
 

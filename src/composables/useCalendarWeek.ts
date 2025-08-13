@@ -11,7 +11,6 @@ export function useCalendarWeek(
   const currentWeekRef = computed(() => currentWeek());
   const bookingsRef = computed(() => bookings());
 
-  // Memoized week days calculation for better performance
   const weekDays = useMemo(() => {
     const days = getWeekDays(currentWeekRef.value);
     const bookingsValue = bookingsRef.value;

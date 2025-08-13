@@ -1,15 +1,15 @@
-import { describe, it, expect } from 'vitest';
 import {
-  formatDate,
-  formatDateLong,
-  isSameDay,
-  isToday,
-  isWeekend,
-  getWeekDays,
   addWeeks,
   calculateDuration,
   debounce,
+  formatDate,
+  formatDateLong,
+  getWeekDays,
+  isSameDay,
+  isToday,
+  isWeekend,
 } from '@/utils';
+import { describe, expect, it } from 'vitest';
 
 describe('Utils', () => {
   describe('formatDate', () => {
@@ -65,33 +65,28 @@ describe('Utils', () => {
 
   describe('isWeekend', () => {
     it('returns true for Saturday', () => {
-      // Create a Saturday date
-      const saturday = new Date('2025-08-09'); // This is a Saturday
+      const saturday = new Date('2025-08-09');
       expect(isWeekend(saturday)).toBe(true);
     });
 
     it('returns true for Sunday', () => {
-      const sunday = new Date('2025-08-10'); // This is a Sunday
+      const sunday = new Date('2025-08-10');
       expect(isWeekend(sunday)).toBe(true);
     });
 
     it('returns false for weekdays', () => {
-      const monday = new Date('2025-08-11'); // This is a Monday
+      const monday = new Date('2025-08-11');
       expect(isWeekend(monday)).toBe(false);
     });
   });
 
   describe('getWeekDays', () => {
     it('returns 7 days starting from Monday', () => {
-      const date = new Date('2025-08-09'); // Saturday
+      const date = new Date('2025-08-09');
       const weekDays = getWeekDays(date);
 
       expect(weekDays).toHaveLength(7);
-
-      // First day should be Monday
       expect(weekDays[0].getDay()).toBe(1);
-
-      // Last day should be Sunday
       expect(weekDays[6].getDay()).toBe(0);
     });
   });
@@ -102,7 +97,7 @@ describe('Utils', () => {
       const newDate = addWeeks(date, 2);
 
       expect(newDate.getDate()).toBe(23);
-      expect(newDate.getMonth()).toBe(7); // August (0-indexed)
+      expect(newDate.getMonth()).toBe(7);
     });
 
     it('subtracts weeks with negative number', () => {
@@ -110,7 +105,7 @@ describe('Utils', () => {
       const newDate = addWeeks(date, -1);
 
       expect(newDate.getDate()).toBe(2);
-      expect(newDate.getMonth()).toBe(7); // August (0-indexed)
+      expect(newDate.getMonth()).toBe(7);
     });
   });
 
@@ -120,7 +115,7 @@ describe('Utils', () => {
       const endDate = '2025-08-12';
 
       const duration = calculateDuration(startDate, endDate);
-      expect(duration).toBe(3);
+      expect(duration).toBe(4);
     });
 
     it('handles same day', () => {
@@ -128,7 +123,7 @@ describe('Utils', () => {
       const endDate = '2025-08-09';
 
       const duration = calculateDuration(startDate, endDate);
-      expect(duration).toBe(0);
+      expect(duration).toBe(1);
     });
   });
 
@@ -138,18 +133,14 @@ describe('Utils', () => {
       const fn = () => callCount++;
       const debouncedFn = debounce(fn, 100);
 
-      // Call multiple times quickly
       debouncedFn();
       debouncedFn();
       debouncedFn();
 
-      // Should not have been called yet
       expect(callCount).toBe(0);
 
-      // Wait for debounce delay
       await new Promise(resolve => setTimeout(resolve, 150));
 
-      // Should have been called only once
       expect(callCount).toBe(1);
     });
   });

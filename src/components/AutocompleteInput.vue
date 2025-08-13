@@ -59,42 +59,44 @@
       {{ error }}
     </p>
 
-    <div
-      v-if="showDropdown && (suggestions.length > 0 || noResultsMessage)"
-      role="listbox"
-      :aria-label="`${suggestions.length} stations found`"
-      class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
-    >
+    <Transition name="slide-up">
       <div
-        v-if="suggestions.length === 0 && noResultsMessage"
-        class="px-4 py-3 text-sm text-gray-500"
+        v-if="showDropdown && (suggestions.length > 0 || noResultsMessage)"
+        role="listbox"
+        :aria-label="`${suggestions.length} stations found`"
+        class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
       >
-        {{ noResultsMessage }}
-      </div>
+        <div
+          v-if="suggestions.length === 0 && noResultsMessage"
+          class="px-4 py-3 text-sm text-gray-500"
+        >
+          {{ noResultsMessage }}
+        </div>
 
-      <button
-        v-for="(suggestion, index) in suggestions"
-        :key="suggestion.id"
-        :id="`suggestion-${index}`"
-        type="button"
-        role="option"
-        :aria-selected="index === selectedIndex"
-        :aria-label="`${suggestion.name}, ${suggestion.address}`"
-        class="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-200"
-        :class="{
-          'bg-primary-50 text-primary-900': index === selectedIndex,
-        }"
-        @click="selectSuggestion(suggestion)"
-        @mouseenter="selectedIndex = index"
-      >
-        <div class="font-medium text-gray-900">
-          {{ suggestion.name }}
-        </div>
-        <div class="text-gray-500 truncate">
-          {{ suggestion.address }}
-        </div>
-      </button>
-    </div>
+        <button
+          v-for="(suggestion, index) in suggestions"
+          :key="suggestion.id"
+          :id="`suggestion-${index}`"
+          type="button"
+          role="option"
+          :aria-selected="index === selectedIndex"
+          :aria-label="`${suggestion.name}, ${suggestion.address}`"
+          class="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-200"
+          :class="{
+            'bg-primary-50 text-primary-900': index === selectedIndex,
+          }"
+          @click="selectSuggestion(suggestion)"
+          @mouseenter="selectedIndex = index"
+        >
+          <div class="font-medium text-gray-900">
+            {{ suggestion.name }}
+          </div>
+          <div class="text-gray-500 truncate">
+            {{ suggestion.address }}
+          </div>
+        </button>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -130,7 +132,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-// Template refs
 const inputRef = ref<HTMLInputElement>();
 
 const query = ref('');

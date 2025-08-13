@@ -217,7 +217,6 @@ const MOCK_STATION_BOOKINGS = {
   ],
 };
 
-// Simplified deterministic generators for consistent mock data
 const seededRandom = (seed: string): number => {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -258,7 +257,6 @@ const getPrice = (bookingId: string): number => {
   return Math.floor(random * 1000) + 200;
 };
 
-// Simple utility functions
 const searchStations = (stations: Station[], query: string): Station[] => {
   if (!query.trim()) return stations;
   const lowercaseQuery = query.toLowerCase();

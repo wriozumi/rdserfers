@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   AppError,
   ErrorHandler,
+  getUserFriendlyMessage,
   handleAsyncError,
   handleSyncError,
-  getUserFriendlyMessage,
   withRetry,
 } from '../utils/errorHandling';
 
@@ -66,7 +66,6 @@ describe('ErrorHandling', () => {
     });
 
     it('should limit error log to 100 entries', () => {
-      // Add 150 errors
       for (let i = 0; i < 150; i++) {
         errorHandler.logError(new Error(`Error ${i}`));
       }
@@ -74,7 +73,6 @@ describe('ErrorHandling', () => {
       const log = errorHandler.getErrorLog();
       expect(log).toHaveLength(100);
 
-      // Should keep the latest 100 errors
       expect(log[0].error.message).toBe('Error 50');
       expect(log[99].error.message).toBe('Error 149');
     });
@@ -246,7 +244,7 @@ describe('ErrorHandling', () => {
       vi.runAllTimers();
 
       await expect(resultPromise).rejects.toThrow('Persistent failure');
-      expect(operation).toHaveBeenCalledTimes(3); // Initial + 2 retries
+      expect(operation).toHaveBeenCalledTimes(3);
 
       const log = errorHandler.getErrorLog();
       expect(log.length).toBeGreaterThan(0);
@@ -261,10 +259,8 @@ describe('ErrorHandling', () => {
 
       const resultPromise = withRetry(operation, 3, 100);
 
-      // Check that timers are scheduled
-      expect(vi.getTimerCount()).toBe(0); // No initial delay
+      expect(vi.getTimerCount()).toBe(0);
 
-      // Fast forward through all delays
       vi.runAllTimers();
 
       await resultPromise;
@@ -285,7 +281,6 @@ describe('ErrorHandling', () => {
       const log = errorHandler.getErrorLog();
       expect(log.length).toBeGreaterThan(0);
 
-      // Should have retry attempt and final failure logs
       const retryAttempts = log.filter(
         entry => entry.context.action === 'retry_attempt'
       );

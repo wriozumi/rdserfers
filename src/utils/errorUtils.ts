@@ -37,7 +37,6 @@ export function handleApiError(error: unknown): AppError {
   }
 
   if (error instanceof Error) {
-    // Network errors
     if (error.name === 'AbortError') {
       return new NetworkError('Request timeout');
     }
@@ -64,8 +63,6 @@ export function logError(error: AppError, context?: string) {
 
   console.error('[Error]', logData);
 
-  // In production, send to monitoring service
   if (import.meta.env.PROD) {
-    // Send to Sentry, LogRocket, etc.
   }
 }

@@ -1,4 +1,3 @@
-// Proper API types instead of any
 export interface MockBookingResponse {
   id: string;
   customerName: string;

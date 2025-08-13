@@ -44,11 +44,9 @@ describe('AutocompleteInput', () => {
     const wrapper = mount(AutocompleteInput);
     const input = wrapper.find('input');
 
-    // Focus input and type to trigger dropdown
     await input.setValue('Ber');
     await input.trigger('focus');
 
-    // Update suggestions through exposed method
     wrapper.vm.updateSuggestions([mockStation]);
     await nextTick();
 
@@ -99,7 +97,6 @@ describe('AutocompleteInput', () => {
     await input.setValue('Berlin');
     await nextTick();
 
-    // Find the clear button (not the suggestion button)
     const clearButton = wrapper.find(
       'button[type="button"]:not([role="option"])'
     );

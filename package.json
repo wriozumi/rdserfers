@@ -13,7 +13,8 @@
     "format": "prettier --write \"src/**/*.{vue,ts,js}\"",
     "format:check": "prettier --check \"src/**/*.{vue,ts,js}\"",
     "lint:fix": "eslint --fix \"src/**/*.{vue,ts,js}\"",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "test:integration": "vitest run src/**/*integration*.test.ts"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
