@@ -2,7 +2,7 @@
 
 A Vue 3 TypeScript application for managing RoadSurfer vehicle bookings with calendar view, station search, and booking management features.
 
-🚀 **[Live Demo on GitHub Pages](https://wriozumi.github.io/rdserfer/)**
+🚀 **[Live Demo on GitHub Pages](https://wriozumi.github.io/rdserfers/)**
 
 ## Features
 
